@@ -90,6 +90,7 @@ def drawEnvironment(screen, env):
 if __name__ == "__main__":
   pygame.init()
   env = Environment(10,10)
+  env.generateRandom(20)
   screen = pygame.display.set_mode((800,800))
   drawEnvironment(screen, env)
   pygame.display.update()
