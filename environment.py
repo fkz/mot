@@ -51,13 +51,12 @@ class Environment:
     length = screenDim / (cellDim)
     for x in range(0, envWidth):
       for y in range(0, envHeight):
-        if self.cells[x,y].mot != None:
-          color = self.cells[x,y].mot.color
-        else:
-          color = backgroundColor
         pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1,length+2,length+2), 0)
         pygame.draw.rect(screen, backgroundColor, (x * length, y * length,length,length), 0)
-        pygame.draw.circle(screen, color, (x * length - length/2, y*length - length/2), length/2 -1, 0)
+        if self.cells[x,y].mot != None:
+          color = self.cells[x,y].mot.color
+          pygame.draw.circle(screen, (0,0,0), (x * length - length/2, y*length - length/2), length/2, 0)
+          pygame.draw.circle(screen, color, (x * length - length/2, y*length - length/2), length/2 -1, 0)
     pygame.display.update()
 
   def move(self, mot, x, y):
