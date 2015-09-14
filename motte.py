@@ -25,7 +25,7 @@ class Motte:
   def __init__(self, allel1, allel2):
     self.allel1 = allel1
     self.allel2 = allel2
-    self.color = (map (lambda x, y: (x + y) / 2), allel1.color(), allel2.color())
+    self.color = map (lambda x, y: (x + y) / 2, allel1.color(), allel2.color())
 
   def randomAllel(self):
     if random.randint(0, 1) == 0:
@@ -42,6 +42,14 @@ def newChild(motte1, motte2):
   assert(isInstance(motte1, Motte))
   return Motte(mutate(motte1.randomAllel()), mutate(motte2.randomAllel()))
 
+class Cell:
+  def __init__(self):
+    self.mot = None
+    self.color = backgroundColor
+  
+  def setMot(self, mot):
+    self.mot = mot
+    self.color = mot.color
 
 class Environment:
   def __init__(self, height, width):
@@ -50,21 +58,21 @@ class Environment:
     self.cells = {}
     for y in range(height):
       for x in range(width):
-        self.cells[x,y] = None
+        self.cells[x,y] = Cell()
   
   def generateRandom(self, count):
     realcount = 0
     for i in range(count):
-      x = random.randint(0, self.width)
-      y = random.randint(0, self.height)
+      x = random.randint(0, self.width - 1)
+      y = random.randint(0, self.height - 1)
       allel1 = Allel()
       allel1.random()
       allel2 = Allel()
       allel2.random()
       mot = Motte(allel1, allel2)
-      if self.cells[x,y] == None:
+      if self.cells[x,y].mot == None:
         realcount += 1
-      self.cells[x,y] = mot
+      self.cells[x,y].setMot(mot)
 
   def step(self):
     pass
