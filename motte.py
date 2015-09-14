@@ -20,19 +20,17 @@ class Motte:
   def __init__(self, allel1, allel2):
     self.allel1 = allel1
     self.allel2 = allel2
-    self.color = (map allel1.rgb + allel2.rgb) / 2
-  
+    self.color = (map (lambda x, y: (x + y) / 2), allel1.color(), allel2.color())
+
   def randomAllel(self):
     if random.randint(0, 1) == 0:
       return self.allel1
     else:
       return self.allel2
-  
 
 def newChild(motte1, motte2):
   assert(isInstance(motte1, Motte))
   return Motte(motte1.randomAllel(), motte2.randomAllel)
-
 
 class Environment:
   def __init__(self, height, width):
@@ -41,7 +39,7 @@ class Environment:
     for y in range(height):
       for x in range(width):
         self.cells[y][x] = None
-  
+
   def generateRandom(self, count):
     realcount = 0
     for i in range(count):
@@ -53,6 +51,3 @@ class Environment:
         realcount += 1
       self.cells[x][y] = allel
 
-  def step(self):
-    
-      
