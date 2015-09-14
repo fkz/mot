@@ -61,6 +61,7 @@ class Environment:
     pygame.display.update()
 
   def move(self, mot, x, y):
+    mot.hasMoved = True
     dx = 0; dy = 0;
     direction = random.randint(0, 4)
     if direction == 0: # try up
@@ -81,4 +82,9 @@ class Environment:
     for x in range(0, self.width):
       for y in range(0, self.height):
         if self.cells[x,y].mot != None:
+          self.cells[x,y].mot.hasMoved = False
+
+    for x in range(0, self.width):
+      for y in range(0, self.height):
+        if self.cells[x,y].mot != None and self.cells[x,y].mot.hasMoved == False:
           self.move(self.cells[x,y].mot, x, y)

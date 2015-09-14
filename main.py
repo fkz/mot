@@ -8,7 +8,7 @@ from environment import Environment
 
 if __name__ == "__main__":
   pygame.init()
-  env = Environment(10,10)
+  env = Environment(20,20)
   env.generateRandom(20)
   screen = pygame.display.set_mode((1000,1000))
   env.draw(screen)

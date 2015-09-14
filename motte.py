@@ -26,6 +26,7 @@ class Motte:
     self.allel1 = allel1
     self.allel2 = allel2
     self.color = map (lambda x, y: (x + y) / 2, allel1.color(), allel2.color())
+    self.hasMoved = False
 
   def randomAllel(self):
     if random.randint(0, 1) == 0:
