@@ -101,7 +101,7 @@ if __name__ == "__main__":
   env = Environment(10,10)
   env.generateRandom(20)
   screen = pygame.display.set_mode((1000,1000))
-  drawEnvironment(screen, env)
+  env.draw(screen)
   pygame.display.update()
   while True:
     for event in pygame.event.get():
