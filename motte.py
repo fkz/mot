@@ -92,14 +92,15 @@ def drawEnvironment(screen, env):
       else:
         color = backgroundColor
       pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1,length+2,length+2), 0)
-      pygame.draw.rect(screen, color, (x * length, y * length,length,length), 0)
+      pygame.draw.rect(screen, backgroundColor, (x * length, y * length,length,length), 0)
+      pygame.draw.circle(screen, color, (x * length - length/2, y*length - length/2), length/2 -1, 0)
   pygame.display.update()
 
 if __name__ == "__main__":
   pygame.init()
   env = Environment(10,10)
   env.generateRandom(20)
-  screen = pygame.display.set_mode((800,800))
+  screen = pygame.display.set_mode((1000,1000))
   drawEnvironment(screen, env)
   pygame.display.update()
   while True:
