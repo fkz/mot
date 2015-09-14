@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import random
-import matplotlib.pylab as plt
+import pygame
+import sys
 
 mutationProbability = 0.10
+backgroundColor = (0,0,255)
 
 class Allel:
   def __init__(self):
@@ -55,15 +57,43 @@ class Environment:
     for i in range(count):
       x = random.randint(0, self.width)
       y = random.randint(0, self.height)
-      allel = Allel()
-      allel.random()
+      allel1 = Allel()
+      allel1.random()
+      allel2 = Allel()
+      allel2.random()
+      mot = Motte(allel1, allel2)
       if self.cells[x,y] == None:
         realcount += 1
-      self.cells[x,y] = allel
+      self.cells[x,y] = mot
 
   def step(self):
     pass
 
+def drawEnvironment(screen, env):
+  screenWidth = screen.get_width()
+  screenHeight = screen.get_height()
+  envWidth = env.width
+  envHeight = env.height
+  cellDim = max(envWidth, envHeight)
+  screenDim = min(screenWidth, screenHeight)
+  length = screenDim / (cellDim)
+  for x in range(0, envWidth):
+    for y in range(0, envHeight):
+      if env.cells[x,y] != None:
+        color = env.cells[x,y].color
+      else:
+        color = (0,255,255)
+      pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1,length+2,length+2), 0)
+      pygame.draw.rect(screen, color, (x * length, y * length,length,length), 0)
+  pygame.display.update()
+
 if __name__ == "__main__":
-  env = Environment(100,100)
-      
+  pygame.init()
+  env = Environment(10,10)
+  screen = pygame.display.set_mode((800,800))
+  drawEnvironment(screen, env)
+  pygame.display.update()
+  while True:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit(); sys.exit();
