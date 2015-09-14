@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import random
+import matplotlib.pylab as plt
 
 mutationProbability = 0.10
 
@@ -22,7 +23,7 @@ class Motte:
   def __init__(self, allel1, allel2):
     self.allel1 = allel1
     self.allel2 = allel2
-    self.color = (map allel1.rgb + allel2.rgb) / 2
+    #self.color = (map allel1.rgb + allel2.rgb) / 2
   
   def randomAllel(self):
     if random.randint(0, 1) == 0:
@@ -44,9 +45,10 @@ class Environment:
   def __init__(self, height, width):
     self.height = height
     self.width = width
+    self.cells = {}
     for y in range(height):
       for x in range(width):
-        self.cells[y][x] = None
+        self.cells[x,y] = None
   
   def generateRandom(self, count):
     realcount = 0
@@ -55,10 +57,13 @@ class Environment:
       y = random.randint(0, self.height)
       allel = Allel()
       allel.random()
-      if self.cells[x][y] == None:
+      if self.cells[x,y] == None:
         realcount += 1
-      self.cells[x][y] = allel
+      self.cells[x,y] = allel
 
   def step(self):
-    
+    pass
+
+if __name__ == "__main__":
+  env = Environment(100,100)
       
