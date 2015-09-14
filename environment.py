@@ -55,14 +55,14 @@ class Environment:
         pygame.draw.rect(screen, backgroundColor, (x * length, y * length,length,length), 0)
         if self.cells[x,y].mot != None:
           color = self.cells[x,y].mot.color
-          pygame.draw.circle(screen, (0,0,0), (x * length - length/2, y*length - length/2), length/2, 0)
-          pygame.draw.circle(screen, color, (x * length - length/2, y*length - length/2), length/2 -1, 0)
+          pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), length/2, 0)
+          pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), length/2 -1, 0)
     pygame.display.update()
 
   def move(self, mot, x, y):
     mot.hasMoved = True
     dx = 0; dy = 0;
-    direction = random.randint(0, 4)
+    direction = random.randint(0, 3)
     if direction == 0: # try up
       dy = -1
     elif direction == 1: # try down
@@ -70,7 +70,7 @@ class Environment:
     elif direction == 2: # try left
       dx = -1
     else: # try right
-      dx = 1
+      dx = +1
     newX = x + dx; newY = y + dy;
     if (newX >= 0 and newX < self.width and newY >= 0 and newY < self.height):
       if (self.cells[newX,newY].mot == None):
