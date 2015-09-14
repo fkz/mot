@@ -30,11 +30,11 @@ class Motte:
     self.allel1 = allel1
     self.allel2 = allel2
     self.color = mergeColor(allel1.rgb, allel2.rgb)
-    self.hasMoved = False
     self.hasMated = False
     self.x = x
     self.y = y
     self.age = age
+    self.neighbors = []
 
   def randomAllel(self):
     if random.randint(0, 1) == 0:

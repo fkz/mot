@@ -8,8 +8,8 @@ from environment import Environment
 
 if __name__ == "__main__":
   pygame.init()
-  env = Environment(50,50)
-  env.generateRandom(42)
+  env = Environment(30,30)
+  env.generateRandom(100)
   screen = pygame.display.set_mode((1000,1000))
   env.draw(screen)
   pygame.display.update()

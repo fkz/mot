@@ -9,13 +9,14 @@ from motte import Allel
 from motte import newChild
 
 backgroundColor = (37, 172, 118)
-maxAge = 100
-minMatingAge = 16
+maxAge = 10
+minMatingAge = 6
 
 class Cell:
-  def __init__(self):
+  def __init__(self, neighborIndices):
     self.mot = None
     self.color = backgroundColor
+    self.neighborIndices = neighborIndices
   
   def setMot(self, mot):
     self.mot = mot
@@ -29,10 +30,50 @@ class Environment:
     self.height = height
     self.width = width
     self.mots = []
+    self.activeMots = []
     self.cells = {}
     for y in range(height):
       for x in range(width):
-        self.cells[x,y] = Cell()
+        self.cells[x,y] = Cell(self.neighborIndices(x,y))
+
+  def neighborIndices(self, x,y):
+    indices = []
+    for dx in [-1,0,1]:
+      for dy in [-1,0,1]:
+        if dx == 0 and dy == 0:
+          continue
+        newX = x + dx; newY = y + dy;
+        if newX >= 0 and newX < self.width and newY >= 0 and newY < self.height:
+          indices.append((newX, newY))
+    return indices
+
+  def computeNeighbors(self, mot):
+    mot.neighbors = []
+    for (x,y) in self.cells[mot.x, mot.y].neighborIndices:
+      if self.cells[x,y].mot != None:
+        mot.neighbors.append(self.cells[x,y].mot)
+
+  def addMot(self, mot):
+    self.cells[mot.x, mot.y].setMot(mot)
+    self.mots.append(mot)
+    self.computeNeighbors(mot)
+    if len(mot.neighbors) < len(self.cells[mot.x, mot.y].neighborIndices):
+      self.activeMots.append(mot)
+    for tom in mot.neighbors:
+      self.computeNeighbors(tom)
+      if len(tom.neighbors) == len(self.cells[tom.x, tom.y].neighborIndices):
+        self.activeMots.remove(tom)
+    
+  def removeMot(self, mot):
+     self.cells[mot.x, mot.y].mot = None
+     if len(mot.neighbors) < len(self.cells[mot.x, mot.y].neighborIndices):
+       self.activeMots.remove(mot)
+     for tom in mot.neighbors:
+       oldNum = len(tom.neighbors)
+       self.computeNeighbors(tom)
+       if (oldNum == len(self.cells[tom.x, tom.y].neighborIndices)):
+         self.activeMots.append(tom)
+     self.mots.remove(mot)
   
   def generateRandom(self, count):
     realcount = 0
@@ -44,8 +85,7 @@ class Environment:
         allel1 = Allel(randomRGB())
         allel2 = Allel(randomRGB())
         mot = Motte(allel1, allel2, x, y, 0)
-        self.cells[x,y].setMot(mot)
-        self.mots.append(mot)
+        self.addMot(mot)
 
   def draw(self, screen):
     screenWidth = screen.get_width()
@@ -66,7 +106,6 @@ class Environment:
     pygame.display.update()
 
   def move(self, mot):
-    mot.hasMoved = True
     dx = 0; dy = 0;
     direction = random.randint(0, 3)
     if direction == 0: # try up
@@ -80,26 +119,21 @@ class Environment:
     newX = mot.x + dx; newY = mot.y + dy;
     if (newX >= 0 and newX < self.width and newY >= 0 and newY < self.height):
       if (self.cells[newX,newY].mot == None):
-        self.cells[mot.x, mot.y].mot = None
-        self.cells[newX, newY].mot = mot
+        self.removeMot(mot)
         mot.x = newX; mot.y = newY;
+        self.addMot(mot)
 
   def mate(self, mot):
-    neighbors = []
+    potentialMates = []
     freePositions = []
-    for dx in [-1,0,1]:
-      for dy in [-1,0,1]:
-        if dx == 0 and dy == 0:
-          continue
-        actX = mot.x + dx
-        actY = mot.y + dy
-        if (actX >= 0 and actX < self.width and actY >= 0 and actY < self.height):
-          if self.cells[actX, actY].mot != None and self.cells[actX, actY].mot.age >= minMatingAge:
-            neighbors.append(self.cells[actX, actY].mot)
-          else:
-            freePositions.append((actX, actY))
-    if len(neighbors) > 0 and len(freePositions) > 0:
-      partner = neighbors[random.randint(0, len(neighbors) - 1)]
+    for (actX, actY) in self.cells[mot.x, mot.y].neighborIndices:
+      if self.cells[actX, actY].mot != None:
+        if self.cells[actX, actY].mot.age >= minMatingAge:
+          potentialMates.append(self.cells[actX, actY].mot)
+      else:
+        freePositions.append((actX, actY))
+    if len(potentialMates) > 0 and len(freePositions) > 0:
+      partner = potentialMates[random.randint(0, len(potentialMates) - 1)]
       mating = random.randint(0,1)
       if mating == 1:
         if len(freePositions) > 1:
@@ -108,11 +142,12 @@ class Environment:
           newPos = freePositions[0]
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
-        self.cells[newMot.x, newMot.y].mot = newMot
-        self.mots.append(newMot)
+
+        self.addMot(newMot)
         #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")."
 
   def step(self):
+    #print "number of active mots: " + str(len(self.activeMots))
     #print "doing step with " + str(len(self.mots)) + " mots:"
     # initialize mating
     for mot in self.mots:
@@ -121,14 +156,14 @@ class Environment:
     for mot in self.mots:
       mot.age += 1
       if (mot.age > maxAge):
-        self.cells[mot.x, mot.y].mot = None
-        self.mots.remove(mot)
+        self.removeMot(mot)
         #print "A mot died of old age."
     # move the mots
-    for mot in self.mots:
+    for mot in self.activeMots:
       self.move(mot)
     # check for mates
-    for mot in self.mots:
+    for mot in self.activeMots:
       if mot.hasMated == False and mot.age >= minMatingAge:
+        pass
         self.mate(mot)
 
