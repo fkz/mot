@@ -2,6 +2,8 @@
 
 import random
 
+mutationProbability = 0.10
+
 class Allel:
   def __init__(self):
     self.rgb = (0, 0, 0)
@@ -28,10 +30,14 @@ class Motte:
     else:
       return self.allel2
   
+def mutate(allel):
+  a = random.uniform(0.0, 1.0)
+  if (a < mutationProbability):
+    allel.rgb = (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
 
 def newChild(motte1, motte2):
   assert(isInstance(motte1, Motte))
-  return Motte(motte1.randomAllel(), motte2.randomAllel)
+  return Motte(mutate(motte1.randomAllel()), mutate(motte2.randomAllel()))
 
 
 class Environment:
