@@ -5,7 +5,7 @@ import pygame
 import sys
 
 mutationProbability = 0.10
-backgroundColor = (0,0,255)
+backgroundColor = (37, 172, 118)
 
 class Allel:
   def __init__(self):
@@ -82,7 +82,7 @@ def drawEnvironment(screen, env):
       if env.cells[x,y] != None:
         color = env.cells[x,y].color
       else:
-        color = (0,255,255)
+        color = backgroundColor
       pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1,length+2,length+2), 0)
       pygame.draw.rect(screen, color, (x * length, y * length,length,length), 0)
   pygame.display.update()
