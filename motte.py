@@ -16,7 +16,6 @@ class Allel:
     else:
       return Allel(self.rgb)
 
-
 def mergeColor(rgb1, rgb2):
   return ((rgb1[0] + rgb2[0]) / 2, (rgb1[1] + rgb2[1]) / 2, (rgb1[2] + rgb2[2]) / 2)
 
@@ -39,6 +38,29 @@ class Motte:
       return Allel(self.allel1.rgb)
     else:
       return Allel(self.allel2.rgb)
+
+class Action:
+  """
+  an action is an interaction of a mot with the environment
+  """
+
+class MotDies(Action):
+  
+class MoveMot(Action):
+  """
+  move in some direction if possible
+  """
+  def __init__(self, dx, dy):
+    self.dx = dx
+    self.dy = dy
+
+class PairWith(Action):
+  """
+  pair with an other mot
+  """
+  def __init__(self, otherMot, positionOfNewChild):
+    self.otherMot = otherMot
+    self.positionOfNewChild = positionOfNewChild
 
 def newChild(motte1, motte2, x, y):
   return Motte(motte1.randomAllel().mutate(), motte2.randomAllel().mutate(), x, y, 0)
