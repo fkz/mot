@@ -7,13 +7,13 @@ import sys
 from motte import Motte
 from motte import Allel
 from motte import newChild
+from settings import minMatingAge
 
 from colorutils import colorDistance
 
 backgroundColor = (255, 255, 255)
 maxAge = 100
-minMatingAge = 20
-enemyVision = 0.70
+enemyVision = 0.25
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -147,15 +147,15 @@ class Environment:
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
        
-        someoneDies = random.randint(0,2)
-        if someoneDies > 0: # chance of 2/3 that someone dies during sex
-          #randomly kill one of the partners
-          poison = random.randint(0,1)
-          #print "A mot died during sex." + " Now we have " + str(self.numMots-1) + " mots."
-          if poison == 0:
-            self.removeMot(mot)
-          else:
-            self.removeMot(partner)
+        #someoneDies = random.randint(0,2)
+        #if someoneDies > 0: # chance of 2/3 that someone dies during sex
+        #  #randomly kill one of the partners
+        #  poison = random.randint(0,1)
+        #  #print "A mot died during sex." + " Now we have " + str(self.numMots-1) + " mots."
+        #  if poison == 0:
+        #    self.removeMot(mot)
+        #  else:
+        #    self.removeMot(partner)
 
         self.addMot(newMot)
         #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")." + " Now we have " + str(self.numMots) + " mots."
@@ -189,6 +189,6 @@ class Environment:
       for y in range(0, self.height):
         if self.cells[x,y].mot != None:
           mot = self.cells[x,y].mot
-          if mot.hasMated == False and mot.age >= minMatingAge:
+          if mot.hasMated == False:
             self.mate(mot)
 

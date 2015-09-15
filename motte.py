@@ -3,7 +3,7 @@
 import random
 import pygame
 import sys
-from settings import mutationProbability
+from settings import mutationProbability, minMatingAge
 
 class Allel:
   def __init__(self, rgb):
@@ -38,6 +38,10 @@ class Motte:
       return Allel(self.allel1.rgb)
     else:
       return Allel(self.allel2.rgb)
+    
+  def doYouWantToMate(self):
+    return self.age >= minMatingAge
+  
   def doMove(self):
     dx = 0; dy = 0;
     direction = random.randint(0, 3)
