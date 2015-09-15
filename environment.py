@@ -30,7 +30,6 @@ class Environment:
     self.height = height
     self.width = width
     self.mots = []
-    self.activeMots = []
     self.cells = {}
     for y in range(height):
       for x in range(width):
@@ -57,22 +56,14 @@ class Environment:
     self.cells[mot.x, mot.y].setMot(mot)
     self.mots.append(mot)
     self.computeNeighbors(mot)
-    if len(mot.neighbors) < len(self.cells[mot.x, mot.y].neighborIndices):
-      self.activeMots.append(mot)
     for tom in mot.neighbors:
       self.computeNeighbors(tom)
-      if len(tom.neighbors) == len(self.cells[tom.x, tom.y].neighborIndices):
-        self.activeMots.remove(tom)
     
   def removeMot(self, mot):
      self.cells[mot.x, mot.y].mot = None
-     if len(mot.neighbors) < len(self.cells[mot.x, mot.y].neighborIndices):
-       self.activeMots.remove(mot)
      for tom in mot.neighbors:
        oldNum = len(tom.neighbors)
        self.computeNeighbors(tom)
-       if (oldNum == len(self.cells[tom.x, tom.y].neighborIndices)):
-         self.activeMots.append(tom)
      self.mots.remove(mot)
   
   def generateRandom(self, count):
@@ -165,10 +156,10 @@ class Environment:
         self.removeMot(mot)
         #print "A mot died of old age."
     # move the mots
-    for mot in self.activeMots:
+    for mot in self.mots:
       self.move(mot)
     # check for mates
-    for mot in self.activeMots:
+    for mot in self.mots:
       if mot.hasMated == False and mot.age >= minMatingAge:
         pass
         self.mate(mot)
