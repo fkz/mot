@@ -51,11 +51,11 @@ class Cell:
     if t == Motte:
       self.motte = value
       return
-    t2 = self.existingType(t)
-    if t2 == None:
-      # TODO: get right t
-      t2 = t
-    self.creatures[t2] = value
+    #t2 = self.existingType(t)
+    #if t2 == None:
+    #  # TODO: get right t
+    #  t2 = t
+    self.creatures[t] = value
     self.updated = True
   def setCreature(self, creature):
     self[type(creature)] = creature
