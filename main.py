@@ -8,6 +8,9 @@ from environment import Environment
 
 def drawGameOverScreen(screen):
   screen.fill((0,0,0))
+  myimage = pygame.image.load("tote_motte.jpg")
+  imagerect = myimage.get_rect()
+  screen.blit(myimage, imagerect)
   myfont = pygame.font.SysFont("monospace", 15)
   label = myfont.render("All mots are dead!", 1, (255,255,0))
   screen.blit(label, (100, 100))
@@ -17,7 +20,7 @@ if __name__ == "__main__":
   pygame.init()
   env = Environment(30,30)
   env.generateRandom(100)
-  screen = pygame.display.set_mode((1000,1000))
+  screen = pygame.display.set_mode((800,800))
   env.draw(screen)
   pygame.display.update()
   #time = 0
