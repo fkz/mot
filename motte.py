@@ -3,7 +3,8 @@
 import random
 import pygame
 import sys
-from settings import mutationProbability, minMatingAge
+from settings import mutationProbability, minMatingAge, maxAge, enemyVision
+from colorutils import colorDistance
 
 class Allel:
   def __init__(self, rgb):
@@ -57,7 +58,11 @@ class Motte:
 
   
   def step(self):
-    return [self.doMove()]
+    self.age += 1
+    if self.age > maxAge:
+      return [MotDies()]
+    else:
+       return [self.doMove(), PairWith(), GetsEaten()]
 
 class Action:
   """
@@ -84,9 +89,27 @@ class PairWith(Action):
   """
   pair with an other mot
   """
-  def __init__(self, otherMot, positionOfNewChild):
-    self.otherMot = otherMot
-    self.positionOfNewChild = positionOfNewChild
+  def executeAction(self, mot, environment):
+    matesInView = list(environment.matesInView(mot))
+    freePositionsInView = list(environment.freePositionsInView(mot))
+    try:
+      partner = random.choice(matesInView)
+      childPosition = random.choice(freePositionsInView)
+      mating = random.randint(0,1)
+      if mating == 1:
+        newMot = newChild(mot, partner, childPosition[0], childPosition[1])
+        environment.addMot(newMot)
+    except IndexError:
+      # there are no partners/no free positions
+      pass
+
+class GetsEaten(Action):
+  def executeAction(self, mot, environment):
+    fitness = (colorDistance(environment.cells[mot.x,mot.y].color, mot.color))
+    isDying = random.randint(0,100)
+    if isDying < int(fitness * enemyVision):
+      #print "A mot was eaten by a grue. Mjammjam." + " Now we have " + str(self.numMots-1) + " mots."
+      environment.removeMot(mot)
 
 def newChild(motte1, motte2, x, y):
   return Motte(motte1.randomAllel().mutate(), motte2.randomAllel().mutate(), x, y, 0)

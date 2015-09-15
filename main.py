@@ -31,5 +31,3 @@ if __name__ == "__main__":
       gameOver = True
       visuals.drawGameOverScreen()
     pygame.time.wait (timePerStepInMilliseconds - (pygame.time.get_ticks() - currentTime))
-
-  
