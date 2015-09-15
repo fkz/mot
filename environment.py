@@ -8,20 +8,28 @@ import itertools
 from motte import Motte
 from motte import Allel
 from motte import newChild
-from settings import minMatingAge
+from settings import minMatingAge, probabilityEagle
+from eagle import Eagle
 
 from colorutils import colorDistance
 
 backgroundColor = (255, 255, 255)
 
 class Cell:
-  def __init__(self, neighborIndices):
+  def __init__(self, x, y, neighborIndices):
+    self.x = x
+    self.y = y
     self.mot = None
+    if random.randrange(100) < probabilityEagle:
+      self.eagle = Eagle(x, y)
+    else:
+      self.eagle = None
     self.color = backgroundColor
     self.neighborIndices = neighborIndices
-  
   def setMot(self, mot):
     self.mot = mot
+  def setEagle(self, eagle):
+    self.eagle = eagle
 
 def randomRGB():
   return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -34,7 +42,7 @@ class Environment:
     self.numMots = 0
     for y in range(height):
       for x in range(width):
-        self.cells[x,y] = Cell(self.neighborIndices(x,y))
+        self.cells[x,y] = Cell(x, y, self.neighborIndices(x,y))
 
   def neighborIndices(self, x,y):
     indices = []
@@ -126,4 +134,8 @@ class Environment:
           mot = self.cells[x,y].mot
           for action in mot.step():
             action.executeAction(mot, self)
-            
+        if self.cells[x,y].eagle != None:
+          eagle = self.cells[x,y].eagle
+          if eagle != None:
+            for action in eagle.step():
+              action.executeAction(eagle, self)

@@ -5,6 +5,7 @@ import pygame
 import sys
 from settings import mutationProbability, minMatingAge, maxAge, enemyVision
 from colorutils import colorDistance
+from creature import Creature, Action
 
 class Allel:
   def __init__(self, rgb):
@@ -20,7 +21,7 @@ class Allel:
 def mergeColor(rgb1, rgb2):
   return ((rgb1[0] + rgb2[0]) / 2, (rgb1[1] + rgb2[1]) / 2, (rgb1[2] + rgb2[2]) / 2)
 
-class Motte:
+class Motte(Creature):
   """
   A representation of a motte
   """
@@ -62,14 +63,7 @@ class Motte:
     if self.age > maxAge:
       return [MotDies()]
     else:
-       return [self.doMove(), PairWith(), GetsEaten()]
-
-class Action:
-  """
-  an action is an interaction of a mot with the environment
-  """
-  def executeAction(self, mot, environment):
-    assert True, "This is an abstract action"
+       return [self.doMove(), PairWith()]
 
 class MotDies(Action):
   def executeAction(self, mot, environment):
@@ -102,14 +96,6 @@ class PairWith(Action):
     except IndexError:
       # there are no partners/no free positions
       pass
-
-class GetsEaten(Action):
-  def executeAction(self, mot, environment):
-    fitness = (colorDistance(environment.cells[mot.x,mot.y].color, mot.color))
-    isDying = random.randint(0,100)
-    if isDying < int(fitness * enemyVision):
-      #print "A mot was eaten by a grue. Mjammjam." + " Now we have " + str(self.numMots-1) + " mots."
-      environment.removeMot(mot)
 
 def newChild(motte1, motte2, x, y):
   return Motte(motte1.randomAllel().mutate(), motte2.randomAllel().mutate(), x, y, 0)
