@@ -49,11 +49,10 @@ class Motte(Creature):
     if self.count < 4:
       return []
     self.count = 0
-    self.age += 1
     if self.age > maxAge:
       return [MotDies()]
     else:
-       return [self.doMove(), PairWith()]
+       return [self.doMove(), PairWith(), AddAge()]
 
 class MotDies(Action):
   def executeAction(self, mot, environment):
@@ -76,6 +75,12 @@ class PairWith(Action):
     except IndexError:
       # there are no partners/no free positions
       pass
+
+class AddAge(Action):
+  def executeAction(self, mot, environment):
+    mot.age += 1
+    if mot.age <= minMatingAge:
+      environment.cells[mot.x,mot.y].updated = True
 
 def newChild(motte1, motte2, x, y):
   return Motte(motte1.randomAllel().mutate(), motte2.randomAllel().mutate(), x, y, 0)
