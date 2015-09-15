@@ -170,7 +170,7 @@ class Environment:
           if mot.age > maxAge:
             self.removeMot(mot)
           else:
-            fitness = (colorDistance(backgroundColor, mot.color))
+            fitness = (colorDistance(self.cells[x,y].color, mot.color))
             isDying = random.randint(0,100)
             if isDying < int(fitness * enemyVision):
               self.removeMot(mot)
