@@ -6,6 +6,8 @@ import sys
 
 from environment import Environment
 
+timePerStepInMilliseconds = 100
+
 def drawGameOverScreen(screen):
   screen.fill((0,0,0))
   myimage = pygame.image.load("tote_motte.jpg")
@@ -23,25 +25,17 @@ if __name__ == "__main__":
   screen = pygame.display.set_mode((800,800))
   env.draw(screen)
   pygame.display.update()
-  #time = 0
 
   gameOver = False
-
   while True:
-    #time += 1
+    currentTime = pygame.time.get_ticks()
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit(); sys.exit();
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_SPACE and gameOver == False:
-          env.step()
-          env.draw(screen)
-          if len(env.mots) == 0:
-            gameOver = True
-        if gameOver == True:
-          drawGameOverScreen(screen)
-          #time = 0
-    #if time == 200000:
-     #   env.step()
-      #  env.draw(screen)
-       # time = 0
+    env.step()
+    env.draw(screen)
+    if len(env.mots) == 0:
+      gameOver = True
+      if gameOver == True:
+        drawGameOverScreen(screen)
+    pygame.time.wait (timePerStepInMilliseconds - (pygame.time.get_ticks() - currentTime))
