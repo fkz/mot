@@ -42,8 +42,11 @@ class Visuals:
     for x in range(0, self.env.width):
       for y in range(0, self.env.height):
         cell = self.env.cells[x,y]
+        updated = cell.updated
+        if self.xray:
+          updated = updated or cell.updatedEagle
 
-        if cell.updated:
+        if updated:
           pygame.draw.rect(screen, cell.color, (x * length+1, y * length+1, length-1, length-1), 0)
           if cell[Motte] != None:
             color = cell[Motte].color
