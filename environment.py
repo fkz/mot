@@ -15,54 +15,37 @@ from colorutils import colorDistance, randomRGB
 
 backgroundColor = (255, 255, 255)
 
+VALID_TYPES = [Motte, Eagle]
+
 class Cell:
   def __init__(self, x, y, neighborIndices):
     self.x = x
     self.y = y
-    self.creatures = {}
-    self.motte = None
-    if random.randrange(100) < probabilityEagle:
-      self.eagle = Eagle(x, y)
-    else:
-      self.eagle = None
-    self.color = backgroundColor
-    self.neighborIndices = neighborIndices
+    self.creatures = [None] * len(VALID_TYPES)
     self.updated = True
     self.updatedEagle = False
-
-  def existingType(self, t):
-    if t in self.creatures.keys():
-      return t
-    else:
-      pass
-      #for c in self.creatures.keys():
-      #  if isinstance(c, t):
-      #    return t
-    return None
-  #  return self.creatures[Motte]
+    if random.randrange(100) < probabilityEagle:
+      self[Eagle] = Eagle(x, y)
+    self.color = backgroundColor
+    self.neighborIndices = neighborIndices
   def __getitem__(self, t):
-    if t == Motte:
-      return self.motte
-    t2 = self.existingType(t)
-    if t2 == None:
-      return None
-    else:
-      return self.creatures[t2]
+    for idx, val in enumerate(VALID_TYPES):
+      if val == t:
+        return self.creatures[idx]
   def __setitem__(self, t, value):
-    if t == Motte:
-      self.motte = value
-      return
-    #t2 = self.existingType(t)
-    #if t2 == None:
-    #  # TODO: get right t
-    #  t2 = t
-    self.creatures[t] = value
+    for idx, val in enumerate(VALID_TYPES):
+      if val == t:
+        self.creatures[idx] = value
     if (t == Eagle) and self.updated == False:
       self.updatedEagle = True
     else:
       self.updated = True
   def setCreature(self, creature):
     self[type(creature)] = creature
+  def allCreatures(self):
+    for creature in self.creatures:
+      if creature != None:
+        yield creature
 
 class Environment:
   def __init__(self, height, width):
@@ -95,7 +78,7 @@ class Environment:
     assert(self.cells[creature.x,creature.y][type(creature)] == None)
     self.cells[creature.x, creature.y].setCreature(creature)
     self.numMots += 1
-    
+
   def removeMot(self, mot):
      assert(self.cells[mot.x, mot.y][Motte] != None)
      self.cells[mot.x, mot.y][Motte] = None
@@ -144,20 +127,13 @@ class Environment:
   def freePositionsInView(self, mot):
     return itertools.ifilter(lambda ind: self.cells[ind][Motte] == None, self.cells[mot.x, mot.y].neighborIndices)
 
-  def step(self):
-    #print "number of active mots: " + str(len(self.activeMots))
-    #print "doing step with " + str(self.numMots) + " mots:"
-    # initialize mating
-
-    # move and age the mots
+  def stepWithAge(self):
     for x in range(0, self.width):
       for y in range(0, self.height):
-        if self.cells[x,y][Motte] != None:
-          mot = self.cells[x,y][Motte]
-          for action in mot.step():
-            action.executeAction(mot, self)
-        if self.cells[x,y].eagle != None:
-          eagle = self.cells[x,y].eagle
-          if eagle != None:
-            for action in eagle.step():
-              action.executeAction(eagle, self)
+        for creature in self.cells[x,y].allCreatures():
+          for action in creature.step(self):
+            yield creature, action
+            action.executeAction(creature, self)
+
+  def step(self):
+    list(self.stepWithAge())

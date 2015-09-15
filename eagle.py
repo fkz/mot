@@ -10,18 +10,23 @@ from motte import Motte
 class Eagle(Creature):
   def __init__(self, x, y):
     super(Eagle, self).__init__(x, y)
-  def step(self):
-    return [KillEagle(), self.doMove()]
-
-class KillEagle(Action):
-  def executeAction(self, eagle, environment):
-    mot = environment.cells[eagle.x,eagle.y][Motte]
+  def shouldKillEagle(self, environment):
+    mot = environment.cells[self.x,self.y][Motte]
     if mot == None:
-      return
-    fitness = (colorDistance(environment.cells[eagle.x,eagle.y].color, mot.color))
+      return False
+    fitness = (colorDistance(environment.cells[self.x,self.y].color, mot.color))
     isDying = random.randint(0,100)
     if isDying < int(fitness * enemyVision):
-      environment.removeMot(mot)
+      return True
+
+  def step(self, environment):
+    if self.shouldKillEagle(environment):
+      yield KillEagle()
+    yield self.doMove()
+    
+class KillEagle(Action):
+  def executeAction(self, eagle, environment):
+    environment.removeMot(environment.cells[eagle.x,eagle.y][Motte])
 
   
   

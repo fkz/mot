@@ -44,38 +44,50 @@ class Motte(Creature):
   def doYouWantToMate(self):
     return self.age >= minMatingAge
   
-  def step(self):
+  def pair(self, environment):
+    matesInView = list(environment.matesInView(self))
+    freePositionsInView = list(environment.freePositionsInView(self))
+    try:
+      partner = random.choice(matesInView)
+      childPosition = random.choice(freePositionsInView)
+      mating = random.randint(0,1)
+      if mating == 1:
+        return PairWith(partner, childPosition)
+      else:
+        return None
+    except IndexError:
+      # there are no partners/no free positions
+      return None
+
+  
+  def step(self, env):
     self.count += 1
-    if self.count < 4:
-      return []
-    self.count = 0
-    if self.age > maxAge:
-      return [MotDies()]
-    else:
-       return [self.doMove(), PairWith(), AddAge()]
+    if self.count >= 4:
+      self.count = 0
+      if self.age > maxAge:
+        yield MotDies()
+      else:
+        yield self.doMove()
+        pairWith = self.pair(env)
+        if pairWith != None:
+          yield pairWith
+        yield AddAge()
 
 class MotDies(Action):
   def executeAction(self, mot, environment):
     environment.removeMot(mot)
   
 class PairWith(Action):
+  def __init__(self, partner, childPosition):
+    self.partner = partner
+    self.childPosition = childPosition
   """
   pair with an other mot
   """
   def executeAction(self, mot, environment):
-    matesInView = list(environment.matesInView(mot))
-    freePositionsInView = list(environment.freePositionsInView(mot))
-    try:
-      partner = random.choice(matesInView)
-      childPosition = random.choice(freePositionsInView)
-      mating = random.randint(0,1)
-      if mating == 1:
-        newMot = newChild(mot, partner, childPosition[0], childPosition[1])
-        environment.addCreature(newMot)
-    except IndexError:
-      # there are no partners/no free positions
-      pass
-
+    newMot = newChild(mot, self.partner, self.childPosition[0], self.childPosition[1])
+    environment.addCreature(newMot)
+    
 class AddAge(Action):
   def executeAction(self, mot, environment):
     mot.age += 1
