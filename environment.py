@@ -84,8 +84,8 @@ class Environment:
         self.addMot(mot)
 
   def makeStripeColors(self):
-    col1 = (255,255,255)
-    col2 = (255,255,255)
+    col1 = (255,255,0)
+    col2 = (255,0,255)
     for x in range(0, self.width):
       for y in range(0, self.height):
         if (y >= self.height/2):
