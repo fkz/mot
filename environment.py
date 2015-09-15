@@ -8,9 +8,12 @@ from motte import Motte
 from motte import Allel
 from motte import newChild
 
+from colorutils import colorDistance
+
 backgroundColor = (37, 172, 118)
 maxAge = 80
 minMatingAge = 30
+enemyVision = 0.10
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -167,6 +170,11 @@ class Environment:
           if mot.age > maxAge:
             self.removeMot(mot)
           else:
+            fitness = (colorDistance(backgroundColor, mot.color))
+            isDying = random.randint(0,100)
+            if isDying < int(fitness * enemyVision):
+              self.removeMot(mot)
+              #print "A mot was eaten by a grue. Mjammjam."
             self.move(mot)
 
     # check for mates

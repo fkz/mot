@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-def colorDistance(r1, g1, b1, r2, g2, b2): # returns value between 0 and 100
+import math
+
+def colorDistanceSingle(r1, g1, b1, r2, g2, b2): # returns value between 0 and 100
   (l1, a1, b1) = colorToLab(r1, g1, b1)
   (l2, a2, b2) = colorToLab(r2, g2, b2)
   return (math.sqrt((l1-l2)**2) + math.sqrt((a1-a2)**2) + math.sqrt((b1-b2)**2)) / 2.55
 
 def colorDistance(rgb1, rgb2):
-  return colorDistance(rgb1[0], rgb1[1], rgb1[2], rgb2[0], rgb2[1], rgb2[2])
+  return colorDistanceSingle(rgb1[0], rgb1[1], rgb1[2], rgb2[0], rgb2[1], rgb2[2])
 
 def colorToLab(R, G, B):
   # http://www.brucelindbloom.com
