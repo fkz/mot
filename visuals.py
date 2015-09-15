@@ -19,6 +19,18 @@ class Visuals:
     self.adlerImage = pygame.transform.scale(self.adlerImage, (self.length, self.length))
     self.xray = True
 
+  def drawInfoScreen(self):
+    fontSize = 25
+    fontSpacing = 2 * fontSize
+    myfont = pygame.font.SysFont("monospace", fontSize)
+    label = myfont.render("Toggle X-ray vision: SPACE", 1, (255,255,0))
+    self.screen.blit(label, (self.env.width * self.length + 20, 10))
+    label = myfont.render("Random Stripes: RETURN", 1, (255,255,0))
+    self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing))
+    label = myfont.render("Quit program: ESCAPE", 1, (255,255,0))
+    self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing * 2))
+    pygame.display.update()
+
   def drawField(self):
     screen = self.screen
     length = self.length
@@ -44,6 +56,7 @@ class Visuals:
             pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
         if cell.eagle != None:
           screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
+    self.drawInfoScreen()
     pygame.display.update()
 
   def toggleXRay(self):
