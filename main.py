@@ -6,7 +6,7 @@ import sys
 
 from environment import Environment
 
-timePerStepInMilliseconds = 150
+timePerStepInMilliseconds = 300
 
 def drawGameOverScreen(screen):
   screen.fill((0,0,0))
@@ -26,8 +26,9 @@ def drawGameOverScreen(screen):
 
 if __name__ == "__main__":
   pygame.init()
-  env = Environment(30,30)
-  env.generateRandom(10200)
+  env = Environment(40,40)
+  env.generateRandom(2000)
+  env.makeStripeColors()
   screen = pygame.display.set_mode((800,800))
   env.draw(screen)
   pygame.display.update()
@@ -43,6 +44,7 @@ if __name__ == "__main__":
       env.draw(screen)
     if env.numMots == 0:
       gameOver = True
-    if gameOver == True:
       drawGameOverScreen(screen)
     pygame.time.wait (timePerStepInMilliseconds - (pygame.time.get_ticks() - currentTime))
+
+  
