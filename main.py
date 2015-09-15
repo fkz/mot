@@ -6,7 +6,7 @@ import sys
 
 from environment import Environment
 
-timePerStepInMilliseconds = 100
+timePerStepInMilliseconds = 150
 
 def drawGameOverScreen(screen):
   screen.fill((0,0,0))

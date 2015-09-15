@@ -139,12 +139,15 @@ class Environment:
           newPos = freePositions[0]
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
-        # randomly kill one of the partners
-        poison = random.randint(0,1)
-        if poison == 0:
-          self.removeMot(mot)
-        else:
-          self.removeMot(partner)
+       
+        someoneDies = random.randint(0,2)
+        if someoneDies > 0: # chance of 2/3 that someone dies during sex
+          # randomly kill one of the partners
+          poison = random.randint(0,1)
+          if poison == 0:
+            self.removeMot(mot)
+          else:
+            self.removeMot(partner)
 
         self.addMot(newMot)
         #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")."
