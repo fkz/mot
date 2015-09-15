@@ -9,8 +9,8 @@ from motte import Allel
 from motte import newChild
 
 backgroundColor = (37, 172, 118)
-maxAge = 89
-minMatingAge = 12
+maxAge = 80
+minMatingAge = 30
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -92,8 +92,11 @@ class Environment:
         pygame.draw.rect(screen, backgroundColor, (x * length, y * length,length,length), 0)
         if self.cells[x,y].mot != None:
           color = self.cells[x,y].mot.color
-          pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), length/2, 0)
-          pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), length/2 -1, 0)
+          ripeness = min(float(self.cells[x,y].mot.age) / float(minMatingAge), 1.0)
+          adultRadius = length/2
+          myRadius = max(int(ripeness * adultRadius), 3)
+          pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
+          pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
     pygame.display.update()
 
   def move(self, mot):
