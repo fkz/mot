@@ -6,7 +6,7 @@ import sys
 
 from environment import Environment
 
-timePerStepInMilliseconds = 300
+timePerStepInMilliseconds = 20
 
 def drawGameOverScreen(screen):
   screen.fill((0,0,0))
@@ -26,8 +26,8 @@ def drawGameOverScreen(screen):
 
 if __name__ == "__main__":
   pygame.init()
-  env = Environment(40,40)
-  env.generateRandom(2000)
+  env = Environment(20,20)
+  env.generateRandom(5000)
   env.makeStripeColors()
   screen = pygame.display.set_mode((800,800))
   env.draw(screen)

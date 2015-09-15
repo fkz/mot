@@ -12,8 +12,8 @@ from colorutils import colorDistance
 
 backgroundColor = (255, 255, 255)
 maxAge = 100
-minMatingAge = 20
-enemyVision = 0.70
+minMatingAge = 5
+enemyVision = 0.25
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -84,8 +84,8 @@ class Environment:
         self.addMot(mot)
 
   def makeStripeColors(self):
-    col1 = (255,255,255)
-    col2 = (255,255,255)
+    col1 = (255,0,0)
+    col2 = (255,255,0)
     for x in range(0, self.width):
       for y in range(0, self.height):
         if (y >= self.height/2):
@@ -155,15 +155,15 @@ class Environment:
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
        
-        someoneDies = random.randint(0,2)
-        if someoneDies > 0: # chance of 2/3 that someone dies during sex
+        #someoneDies = random.randint(0,1)
+        #if someoneDies > 0: # chance of 1/2 that someone dies during sex
           #randomly kill one of the partners
-          poison = random.randint(0,1)
+          #poison = random.randint(0,1)
           #print "A mot died during sex." + " Now we have " + str(self.numMots-1) + " mots."
-          if poison == 0:
-            self.removeMot(mot)
-          else:
-            self.removeMot(partner)
+          #if poison == 0:
+            #self.removeMot(mot)
+          #else:
+            #self.removeMot(partner)
 
         self.addMot(newMot)
         #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")." + " Now we have " + str(self.numMots) + " mots."
