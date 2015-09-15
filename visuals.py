@@ -45,8 +45,8 @@ class Visuals:
 
         if cell.updated:
 
-          pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1, length+2, length+2), 0)
-          pygame.draw.rect(screen, cell.color, (x * length, y * length, length, length), 0)
+          pygame.draw.rect(screen, (0,0,0), (x * length, y * length, length, length), 0)
+          pygame.draw.rect(screen, cell.color, (x * length+1, y * length+1, length-2, length-2), 0)
           if cell[Motte] != None:
             color = cell[Motte].color
             ripeness = min(float(cell[Motte].age) / float(minMatingAge), 1.0)
