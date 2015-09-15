@@ -5,33 +5,18 @@ import pygame
 import sys
 
 from environment import Environment
+from visuals import Visuals
 
 timePerStepInMilliseconds = 20
 
-def drawGameOverScreen(screen):
-  screen.fill((0,0,0))
-  myimage = pygame.image.load("tote_motte.jpg")
-  imagerect = myimage.get_rect()
-
-  dx = screen.get_width() / 2 - imagerect.width / 2
-  dy = screen.get_height() / 2 - imagerect.height / 2
-
-  imagerect.move_ip(dx, dy)
-
-  screen.blit(myimage, imagerect)
-  myfont = pygame.font.SysFont("monospace", 25)
-  label = myfont.render("All mots are dead!", 1, (255,255,0))
-  screen.blit(label, (100, 100))
-  pygame.display.update()
-
 if __name__ == "__main__":
   pygame.init()
+  screen = pygame.display.set_mode((800,800))
   env = Environment(5,5)
   env.generateRandom(5000)
   env.makeStripeColors()
-  screen = pygame.display.set_mode((800,800))
-  env.draw(screen)
-  pygame.display.update()
+  visuals = Visuals(screen, env)
+  visuals.drawField()
 
   gameOver = False
   while True:
@@ -41,10 +26,10 @@ if __name__ == "__main__":
         pygame.quit(); sys.exit();
     if not gameOver:
       env.step()
-      env.draw(screen)
+      visuals.drawField()
     if env.numMots == 0:
       gameOver = True
-      drawGameOverScreen(screen)
+      visuals.drawGameOverScreen()
     pygame.time.wait (timePerStepInMilliseconds - (pygame.time.get_ticks() - currentTime))
 
   

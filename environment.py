@@ -93,34 +93,6 @@ class Environment:
         else:
           self.cells[x,y].color = col2
 
-  def draw(self, screen):
-    screenWidth = screen.get_width()
-    screenHeight = screen.get_height()
-    envWidth = self.width
-    envHeight = self.height
-    cellDim = max(envWidth, envHeight)
-    screenDim = min(screenWidth, screenHeight)
-    length = screenDim / (cellDim)
-    for x in range(0, envWidth):
-      for y in range(0, envHeight):
-        pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1,length+2,length+2), 0)
-        pygame.draw.rect(screen, self.cells[x,y].color, (x * length, y * length,length,length), 0)
-        if self.cells[x,y].mot != None:
-          color = self.cells[x,y].mot.color
-          ripeness = min(float(self.cells[x,y].mot.age) / float(minMatingAge), 1.0)
-          adultRadius = length/2
-          myRadius = max(int(ripeness * adultRadius), 4)
-          pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
-          pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
-
-          allelRadius = max(int(myRadius / 2) - 1, 1)
-          color1 = self.cells[x,y].mot.allel1.rgb
-          color2 = self.cells[x,y].mot.allel2.rgb
-          pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
-          pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
-
-    pygame.display.update()
-
   def move(self, mot, dx, dy):
     newX = mot.x + dx; newY = mot.y + dy;
     if (newX >= 0 and newX < self.width and newY >= 0 and newY < self.height):
