@@ -38,13 +38,33 @@ class Motte:
       return Allel(self.allel1.rgb)
     else:
       return Allel(self.allel2.rgb)
+  def doMove(self):
+    dx = 0; dy = 0;
+    direction = random.randint(0, 3)
+    if direction == 0: # try up
+      dy = -1
+    elif direction == 1: # try down
+      dy = 1
+    elif direction == 2: # try left
+      dx = -1
+    else: # try right
+      dx = +1
+    return MoveMot(dx, dy)
+
+  
+  def step(self):
+    return [self.doMove()]
 
 class Action:
   """
   an action is an interaction of a mot with the environment
   """
+  def executeAction(self, mot, environment):
+    assert True, "This is an abstract action"
 
 class MotDies(Action):
+  def executeAction(self, mot, environment):
+    environment.removeMot(mot)
   
 class MoveMot(Action):
   """
@@ -53,6 +73,8 @@ class MoveMot(Action):
   def __init__(self, dx, dy):
     self.dx = dx
     self.dy = dy
+  def executeAction(self, mot, environment):
+    environment.move(mot, self.dx, self.dy)
 
 class PairWith(Action):
   """

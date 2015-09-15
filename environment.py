@@ -12,8 +12,8 @@ from colorutils import colorDistance
 
 backgroundColor = (255, 255, 255)
 maxAge = 100
-minMatingAge = 5
-enemyVision = 0.25
+minMatingAge = 20
+enemyVision = 0.70
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -84,8 +84,8 @@ class Environment:
         self.addMot(mot)
 
   def makeStripeColors(self):
-    col1 = (255,0,0)
-    col2 = (255,255,0)
+    col1 = (255,255,255)
+    col2 = (255,255,255)
     for x in range(0, self.width):
       for y in range(0, self.height):
         if (y >= self.height/2):
@@ -114,17 +114,7 @@ class Environment:
           pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
     pygame.display.update()
 
-  def move(self, mot):
-    dx = 0; dy = 0;
-    direction = random.randint(0, 3)
-    if direction == 0: # try up
-      dy = -1
-    elif direction == 1: # try down
-      dy = 1
-    elif direction == 2: # try left
-      dx = -1
-    else: # try right
-      dx = +1
+  def move(self, mot, dx, dy):
     newX = mot.x + dx; newY = mot.y + dy;
     if (newX >= 0 and newX < self.width and newY >= 0 and newY < self.height):
       if (self.cells[newX,newY].mot == None):
@@ -140,12 +130,14 @@ class Environment:
     freePositions = []
     for (actX, actY) in self.cells[mot.x, mot.y].neighborIndices:
       if self.cells[actX, actY].mot != None:
-        if self.cells[actX, actY].mot.age >= minMatingAge:
+        if self.cells[actX, actY].mot.doYouWantToMate():
           potentialMates.append(self.cells[actX, actY].mot)
       else:
         freePositions.append((actX, actY))
     if len(potentialMates) > 0 and len(freePositions) > 0:
       partner = potentialMates[random.randint(0, len(potentialMates) - 1)]
+      
+      
       mating = random.randint(0,1)
       if mating == 1:
         if len(freePositions) > 1:
@@ -155,15 +147,15 @@ class Environment:
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
        
-        #someoneDies = random.randint(0,1)
-        #if someoneDies > 0: # chance of 1/2 that someone dies during sex
+        someoneDies = random.randint(0,2)
+        if someoneDies > 0: # chance of 2/3 that someone dies during sex
           #randomly kill one of the partners
-          #poison = random.randint(0,1)
+          poison = random.randint(0,1)
           #print "A mot died during sex." + " Now we have " + str(self.numMots-1) + " mots."
-          #if poison == 0:
-            #self.removeMot(mot)
-          #else:
-            #self.removeMot(partner)
+          if poison == 0:
+            self.removeMot(mot)
+          else:
+            self.removeMot(partner)
 
         self.addMot(newMot)
         #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")." + " Now we have " + str(self.numMots) + " mots."
@@ -179,6 +171,8 @@ class Environment:
         if self.cells[x,y].mot != None:
           mot = self.cells[x,y].mot
           mot.hasMated = False
+          for action in mot.step():
+            action.executeAction(mot, self) 
           mot.age += 1
           if mot.age > maxAge:
             #print "A mot died of old age." + " Now we have " + str(self.numMots-1) + " mots."
@@ -189,8 +183,6 @@ class Environment:
             if isDying < int(fitness * enemyVision):
               #print "A mot was eaten by a grue. Mjammjam." + " Now we have " + str(self.numMots-1) + " mots."
               self.removeMot(mot)
-            else:
-              self.move(mot)
 
     # check for mates
     for x in range(0, self.width):
