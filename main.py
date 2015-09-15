@@ -41,7 +41,7 @@ if __name__ == "__main__":
     if not gameOver:
       env.step()
       env.draw(screen)
-    if len(env.mots) == 0:
+    if env.numMots == 0:
       gameOver = True
       if gameOver == True:
         drawGameOverScreen(screen)

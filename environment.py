@@ -9,8 +9,8 @@ from motte import Allel
 from motte import newChild
 
 backgroundColor = (37, 172, 118)
-maxAge = 10
-minMatingAge = 6
+maxAge = 89
+minMatingAge = 12
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -29,8 +29,8 @@ class Environment:
   def __init__(self, height, width):
     self.height = height
     self.width = width
-    self.mots = []
     self.cells = {}
+    self.numMots = 0
     for y in range(height):
       for x in range(width):
         self.cells[x,y] = Cell(self.neighborIndices(x,y))
@@ -54,17 +54,17 @@ class Environment:
 
   def addMot(self, mot):
     self.cells[mot.x, mot.y].setMot(mot)
-    self.mots.append(mot)
     self.computeNeighbors(mot)
     for tom in mot.neighbors:
       self.computeNeighbors(tom)
+    self.numMots += 1
     
   def removeMot(self, mot):
      self.cells[mot.x, mot.y].mot = None
      for tom in mot.neighbors:
-       oldNum = len(tom.neighbors)
        self.computeNeighbors(tom)
-     self.mots.remove(mot)
+     self.numMots -= 1
+     del(mot)
   
   def generateRandom(self, count):
     realcount = 0
@@ -110,9 +110,12 @@ class Environment:
     newX = mot.x + dx; newY = mot.y + dy;
     if (newX >= 0 and newX < self.width and newY >= 0 and newY < self.height):
       if (self.cells[newX,newY].mot == None):
-        self.removeMot(mot)
+        self.cells[mot.x, mot.y].mot = None
         mot.x = newX; mot.y = newY;
-        self.addMot(mot)
+        self.cells[mot.x, mot.y].setMot(mot)
+        for tom in mot.neighbors:
+          self.computeNeighbors(tom)
+        self.computeNeighbors(mot)
 
   def mate(self, mot):
     potentialMates = []
@@ -147,20 +150,24 @@ class Environment:
     #print "number of active mots: " + str(len(self.activeMots))
     #print "doing step with " + str(len(self.mots)) + " mots:"
     # initialize mating
-    for mot in self.mots:
-      mot.hasMated = False
-    # age the mots
-    for mot in self.mots:
-      mot.age += 1
-      if (mot.age > maxAge):
-        self.removeMot(mot)
-        #print "A mot died of old age."
-    # move the mots
-    for mot in self.mots:
-      self.move(mot)
+
+    # move and age the mots
+    for x in range(0, self.width):
+      for y in range(0, self.height):
+        if self.cells[x,y].mot != None:
+          mot = self.cells[x,y].mot
+          mot.hasMated = False
+          mot.age += 1
+          if mot.age > maxAge:
+            self.removeMot(mot)
+          else:
+            self.move(mot)
+
     # check for mates
-    for mot in self.mots:
-      if mot.hasMated == False and mot.age >= minMatingAge:
-        pass
-        self.mate(mot)
+    for x in range(0, self.width):
+      for y in range(0, self.height):
+        if self.cells[x,y].mot != None:
+          mot = self.cells[x,y].mot
+          if mot.hasMated == False and mot.age >= minMatingAge:
+            self.mate(mot)
 
