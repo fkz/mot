@@ -8,7 +8,7 @@ from environment import Environment
 from visuals import Visuals
 from colorutils import randomRGB
 
-timePerStepInMilliseconds = 200
+timePerStepInMilliseconds = 20
 
 if __name__ == "__main__":
   pygame.init()
