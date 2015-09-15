@@ -5,7 +5,6 @@ import pygame
 import sys
 
 mutationProbability = 0.10
-backgroundColor = (37, 172, 118)
 
 class Allel:
   def __init__(self, rgb):
