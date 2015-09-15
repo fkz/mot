@@ -32,8 +32,9 @@ if __name__ == "__main__":
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit(); sys.exit();
-    env.step()
-    env.draw(screen)
+    if not gameOver:
+      env.step()
+      env.draw(screen)
     if len(env.mots) == 0:
       gameOver = True
       if gameOver == True:
