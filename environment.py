@@ -30,6 +30,21 @@ class Cell:
     self.mot = mot
   def setEagle(self, eagle):
     self.eagle = eagle
+  def __getitem__(self, t):
+    if t == Motte:
+      return self.mot
+    if t == Eagle:
+      return self.eagle
+    assert True, t
+  def __setitem__(self, t, value):
+    if t == Motte:
+      self.mot = value
+    if t == Eagle:
+      self.eagle = value
+    assert True, t
+  def setCreature(self, creature):
+    self[type(creature)] = creature
+  
 
 def randomRGB():
   return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -100,16 +115,14 @@ class Environment:
         else:
           self.cells[x,y].color = col2
 
-  def move(self, mot, dx, dy):
-    newX = mot.x + dx; newY = mot.y + dy;
+  def move(self, creature, dx, dy):
+    newX = creature.x + dx; newY = creature.y + dy;
+    typeOfCreature = type(creature)
     if (newX >= 0 and newX < self.width and newY >= 0 and newY < self.height):
-      if (self.cells[newX,newY].mot == None):
-        self.cells[mot.x, mot.y].mot = None
-        mot.x = newX; mot.y = newY;
-        self.cells[mot.x, mot.y].setMot(mot)
-        for tom in mot.neighbors:
-          self.computeNeighbors(tom)
-        self.computeNeighbors(mot)
+      if (self.cells[newX,newY][typeOfCreature] == None):
+        self.cells[creature.x, creature.y][typeOfCreature] = None
+        creature.x = newX; creature.y = newY;
+        self.cells[creature.x, creature.y].setCreature(creature)
 
   def matesInView(self, mot):
     for (actX, actY) in self.cells[mot.x, mot.y].neighborIndices:
