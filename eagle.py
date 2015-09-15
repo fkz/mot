@@ -10,7 +10,7 @@ class Eagle(Creature):
   def __init__(self, x, y):
     super(Eagle, self).__init__(x, y)
   def step(self):
-    return [KillEagle()]
+    return [KillEagle(), self.doMove()]
 
 class KillEagle(Action):
   def executeAction(self, eagle, environment):

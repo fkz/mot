@@ -44,20 +44,6 @@ class Motte(Creature):
   def doYouWantToMate(self):
     return self.age >= minMatingAge
   
-  def doMove(self):
-    dx = 0; dy = 0;
-    direction = random.randint(0, 3)
-    if direction == 0: # try up
-      dy = -1
-    elif direction == 1: # try down
-      dy = 1
-    elif direction == 2: # try left
-      dx = -1
-    else: # try right
-      dx = +1
-    return MoveMot(dx, dy)
-
-  
   def step(self):
     self.age += 1
     if self.age > maxAge:
@@ -69,16 +55,6 @@ class MotDies(Action):
   def executeAction(self, mot, environment):
     environment.removeMot(mot)
   
-class MoveMot(Action):
-  """
-  move in some direction if possible
-  """
-  def __init__(self, dx, dy):
-    self.dx = dx
-    self.dy = dy
-  def executeAction(self, mot, environment):
-    environment.move(mot, self.dx, self.dy)
-
 class PairWith(Action):
   """
   pair with an other mot
