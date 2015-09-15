@@ -31,6 +31,8 @@ if __name__ == "__main__":
           visuals.toggleXRay()
         if event.key == pygame.K_RETURN:
           env.makeStripeColors(randomRGB(), randomRGB())
+        if event.key == pygame.K_LSHIFT:
+          visuals.toggleShowEagles()
         if event.key == pygame.K_ESCAPE:
           pygame.quit(); sys.exit();
     if not gameOver:

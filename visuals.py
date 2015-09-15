@@ -20,6 +20,7 @@ class Visuals:
     self.adlerImage = pygame.image.load("adler.png").convert_alpha()
     self.adlerImage = pygame.transform.scale(self.adlerImage, (self.length, self.length))
     self.xray = True
+    self.showEagles = True
 
   def drawInfoScreen(self):
     fontSize = 25
@@ -29,8 +30,10 @@ class Visuals:
     self.screen.blit(label, (self.env.width * self.length + 20, 10))
     label = myfont.render("Random Stripes: RETURN", 1, (255,255,0))
     self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing))
-    label = myfont.render("Quit program: ESCAPE", 1, (255,255,0))
+    label = myfont.render("Toggle stealth Eagles: LSHIFT", 1, (255,255,0))
     self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing * 2))
+    label = myfont.render("Quit program: ESCAPE", 1, (255,255,0))
+    self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing * 3))
     pygame.display.update()
 
   def drawField(self):
@@ -38,31 +41,37 @@ class Visuals:
     length = self.length
     for x in range(0, self.env.width):
       for y in range(0, self.env.height):
-        pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1, length+2, length+2), 0)
         cell = self.env.cells[x,y]
 
-        pygame.draw.rect(screen, cell.color, (x * length, y * length, length, length), 0)
-        if cell[Motte] != None:
-          color = cell[Motte].color
-          ripeness = min(float(cell[Motte].age) / float(minMatingAge), 1.0)
-          adultRadius = length/2
-          myRadius = max(int(ripeness * adultRadius), 4)
-          pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
-          pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
+        if cell.updated:
 
-          if self.xray:
-            allelRadius = max(int(myRadius / 2) - 1, 1)
-            color1 = cell[Motte].allel1.rgb
-            color2 = cell[Motte].allel2.rgb
-            pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
-            pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
-        if cell[Eagle] != None:
-          screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
+          pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1, length+2, length+2), 0)
+          pygame.draw.rect(screen, cell.color, (x * length, y * length, length, length), 0)
+          if cell[Motte] != None:
+            color = cell[Motte].color
+            ripeness = min(float(cell[Motte].age) / float(minMatingAge), 1.0)
+            adultRadius = length/2
+            myRadius = max(int(ripeness * adultRadius), 4)
+            pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
+            pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
+
+            if self.xray:
+              allelRadius = max(int(myRadius / 2) - 1, 1)
+              color1 = cell[Motte].allel1.rgb
+              color2 = cell[Motte].allel2.rgb
+              pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
+              pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
+          if self.showEagles and cell[Eagle] != None:
+            screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
+          cell.updated = False
     self.drawInfoScreen()
     pygame.display.update()
 
   def toggleXRay(self):
     self.xray = not self.xray
+
+  def toggleShowEagles(self):
+    self.showEagles = not self.showEagles
 
   def drawGameOverScreen(self):
     screen = self.screen
