@@ -3,8 +3,7 @@
 import random
 import pygame
 import sys
-
-mutationProbability = 0.10
+from settings import mutationProbability
 
 class Allel:
   def __init__(self, rgb):
