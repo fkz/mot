@@ -43,6 +43,6 @@ if __name__ == "__main__":
       env.draw(screen)
     if env.numMots == 0:
       gameOver = True
-      if gameOver == True:
-        drawGameOverScreen(screen)
+    if gameOver == True:
+      drawGameOverScreen(screen)
     pygame.time.wait (timePerStepInMilliseconds - (pygame.time.get_ticks() - currentTime))
