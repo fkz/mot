@@ -26,8 +26,8 @@ def drawGameOverScreen(screen):
 
 if __name__ == "__main__":
   pygame.init()
-  env = Environment(10,10)
-  env.generateRandom(12)
+  env = Environment(30,30)
+  env.generateRandom(10200)
   screen = pygame.display.set_mode((800,800))
   env.draw(screen)
   pygame.display.update()

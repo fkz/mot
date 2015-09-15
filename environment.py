@@ -10,10 +10,10 @@ from motte import newChild
 
 from colorutils import colorDistance
 
-backgroundColor = (37, 172, 118)
-maxAge = 80
-minMatingAge = 30
-enemyVision = 0.10
+backgroundColor = (255, 255, 255)
+maxAge = 100
+minMatingAge = 20
+enemyVision = 0.70
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -143,14 +143,14 @@ class Environment:
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
        
-        someoneDies = random.randint(0,2)
-        if someoneDies > 0: # chance of 2/3 that someone dies during sex
+        #someoneDies = random.randint(0,2)
+        #if someoneDies > 0: # chance of 2/3 that someone dies during sex
           # randomly kill one of the partners
-          poison = random.randint(0,1)
-          if poison == 0:
-            self.removeMot(mot)
-          else:
-            self.removeMot(partner)
+         # poison = random.randint(0,1)
+          #if poison == 0:
+           # self.removeMot(mot)
+          #else:
+          #  self.removeMot(partner)
 
         self.addMot(newMot)
         #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")."
