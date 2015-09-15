@@ -44,14 +44,12 @@ class Visuals:
         cell = self.env.cells[x,y]
 
         if cell.updated:
-
-          pygame.draw.rect(screen, (0,0,0), (x * length, y * length, length, length), 0)
-          pygame.draw.rect(screen, cell.color, (x * length+1, y * length+1, length-2, length-2), 0)
+          pygame.draw.rect(screen, cell.color, (x * length+1, y * length+1, length-1, length-1), 0)
           if cell[Motte] != None:
             color = cell[Motte].color
             ripeness = min(float(cell[Motte].age) / float(minMatingAge), 1.0)
             adultRadius = length/2
-            myRadius = max(int(ripeness * adultRadius), 4)
+            myRadius = max(int(ripeness * adultRadius), 1)
             pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
             pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
 
