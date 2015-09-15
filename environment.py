@@ -20,36 +20,43 @@ class Cell:
     self.x = x
     self.y = y
     self.creatures = {}
+    self.motte = None
     if random.randrange(100) < probabilityEagle:
       self.eagle = Eagle(x, y)
     else:
       self.eagle = None
     self.color = backgroundColor
     self.neighborIndices = neighborIndices
-    
+    self.updated = True
+  
   def existingType(self, t):
     if t in self.creatures.keys():
       return t
     else:
-      for c in self.creatures.keys():
-        if isinstance(c, t):
-          return t
+      pass
+      #for c in self.creatures.keys():
+      #  if isinstance(c, t):
+      #    return t
     return None
-  #@property
-  #def mot(self):
   #  return self.creatures[Motte]
   def __getitem__(self, t):
+    if t == Motte:
+      return self.motte
     t2 = self.existingType(t)
     if t2 == None:
       return None
     else:
       return self.creatures[t2]
   def __setitem__(self, t, value):
+    if t == Motte:
+      self.motte = value
+      return
     t2 = self.existingType(t)
     if t2 == None:
       # TODO: get right t
       t2 = t
     self.creatures[t2] = value
+    self.updated = True
   def setCreature(self, creature):
     self[type(creature)] = creature
 
