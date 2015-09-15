@@ -109,9 +109,16 @@ class Environment:
           color = self.cells[x,y].mot.color
           ripeness = min(float(self.cells[x,y].mot.age) / float(minMatingAge), 1.0)
           adultRadius = length/2
-          myRadius = max(int(ripeness * adultRadius), 3)
+          myRadius = max(int(ripeness * adultRadius), 4)
           pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
           pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
+
+          allelRadius = max(int(myRadius / 2) - 1, 1)
+          color1 = self.cells[x,y].mot.allel1.rgb
+          color2 = self.cells[x,y].mot.allel2.rgb
+          pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
+          pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
+
     pygame.display.update()
 
   def move(self, mot, dx, dy):
