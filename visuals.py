@@ -69,9 +69,15 @@ class Visuals:
 
   def toggleXRay(self):
     self.xray = not self.xray
+    for x in range(0, self.env.width):
+      for y in range(0, self.env.height):
+        self.env.cells[x,y].updated = True
 
   def toggleShowEagles(self):
     self.showEagles = not self.showEagles
+    for x in range(0, self.env.width):
+      for y in range(0, self.env.height):
+        self.env.cells[x,y].updated = True
 
   def drawGameOverScreen(self):
     screen = self.screen

@@ -118,6 +118,7 @@ class Environment:
           self.cells[x,y].color = col1
         else:
           self.cells[x,y].color = col2
+        self.cells[x,y].updated = True
 
   def move(self, creature, dx, dy):
     newX = creature.x + dx; newY = creature.y + dy;
