@@ -11,7 +11,8 @@ timePerStepInMilliseconds = 2
 
 if __name__ == "__main__":
   pygame.init()
-  screen = pygame.display.set_mode((800,800))
+  infoObject = pygame.display.Info()
+  screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
   env = Environment(50,50)
   env.generateRandom(1000)
   env.makeStripeColors()
@@ -27,6 +28,8 @@ if __name__ == "__main__":
       if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
           visuals.toggleXRay()
+        if event.key == pygame.K_ESCAPE:
+          pygame.quit(); sys.exit();
     if not gameOver:
       env.step()
       visuals.drawField()
