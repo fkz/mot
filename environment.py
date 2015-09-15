@@ -23,7 +23,6 @@ class Cell:
   
   def setMot(self, mot):
     self.mot = mot
-    self.color = mot.color
 
 def randomRGB():
   return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -56,6 +55,7 @@ class Environment:
         mot.neighbors.append(self.cells[x,y].mot)
 
   def addMot(self, mot):
+    assert(self.cells[mot.x,mot.y].mot == None)
     self.cells[mot.x, mot.y].setMot(mot)
     self.computeNeighbors(mot)
     for tom in mot.neighbors:
@@ -63,10 +63,12 @@ class Environment:
     self.numMots += 1
     
   def removeMot(self, mot):
+     assert(self.cells[mot.x, mot.y].mot != None)
      self.cells[mot.x, mot.y].mot = None
      for tom in mot.neighbors:
        self.computeNeighbors(tom)
      self.numMots -= 1
+     assert(self.numMots >= 0)
      del(mot)
   
   def generateRandom(self, count):
@@ -81,6 +83,16 @@ class Environment:
         mot = Motte(allel1, allel2, x, y, 0)
         self.addMot(mot)
 
+  def makeStripeColors(self):
+    col1 = (255,255,255)
+    col2 = (255,255,255)
+    for x in range(0, self.width):
+      for y in range(0, self.height):
+        if (y >= self.height/2):
+          self.cells[x,y].color = col1
+        else:
+          self.cells[x,y].color = col2
+
   def draw(self, screen):
     screenWidth = screen.get_width()
     screenHeight = screen.get_height()
@@ -92,7 +104,7 @@ class Environment:
     for x in range(0, envWidth):
       for y in range(0, envHeight):
         pygame.draw.rect(screen, (0,0,0), (x * length-1, y * length-1,length+2,length+2), 0)
-        pygame.draw.rect(screen, backgroundColor, (x * length, y * length,length,length), 0)
+        pygame.draw.rect(screen, self.cells[x,y].color, (x * length, y * length,length,length), 0)
         if self.cells[x,y].mot != None:
           color = self.cells[x,y].mot.color
           ripeness = min(float(self.cells[x,y].mot.age) / float(minMatingAge), 1.0)
@@ -143,21 +155,22 @@ class Environment:
         newMot = newChild(mot, partner, newPos[0], newPos[1])
         mot.hasMated = True; partner.hasMated = True;
        
-        #someoneDies = random.randint(0,2)
-        #if someoneDies > 0: # chance of 2/3 that someone dies during sex
-          # randomly kill one of the partners
-         # poison = random.randint(0,1)
-          #if poison == 0:
-           # self.removeMot(mot)
-          #else:
-          #  self.removeMot(partner)
+        someoneDies = random.randint(0,2)
+        if someoneDies > 0: # chance of 2/3 that someone dies during sex
+          #randomly kill one of the partners
+          poison = random.randint(0,1)
+          #print "A mot died during sex." + " Now we have " + str(self.numMots-1) + " mots."
+          if poison == 0:
+            self.removeMot(mot)
+          else:
+            self.removeMot(partner)
 
         self.addMot(newMot)
-        #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")."
+        #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")." + " Now we have " + str(self.numMots) + " mots."
 
   def step(self):
     #print "number of active mots: " + str(len(self.activeMots))
-    #print "doing step with " + str(len(self.mots)) + " mots:"
+    #print "doing step with " + str(self.numMots) + " mots:"
     # initialize mating
 
     # move and age the mots
@@ -168,14 +181,16 @@ class Environment:
           mot.hasMated = False
           mot.age += 1
           if mot.age > maxAge:
+            #print "A mot died of old age." + " Now we have " + str(self.numMots-1) + " mots."
             self.removeMot(mot)
           else:
             fitness = (colorDistance(self.cells[x,y].color, mot.color))
             isDying = random.randint(0,100)
             if isDying < int(fitness * enemyVision):
+              #print "A mot was eaten by a grue. Mjammjam." + " Now we have " + str(self.numMots-1) + " mots."
               self.removeMot(mot)
-              #print "A mot was eaten by a grue. Mjammjam."
-            self.move(mot)
+            else:
+              self.move(mot)
 
     # check for mates
     for x in range(0, self.width):
