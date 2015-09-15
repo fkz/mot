@@ -28,7 +28,8 @@ class Cell:
     self.color = backgroundColor
     self.neighborIndices = neighborIndices
     self.updated = True
-  
+    self.updatedEagle = False
+
   def existingType(self, t):
     if t in self.creatures.keys():
       return t
@@ -56,7 +57,10 @@ class Cell:
     #  # TODO: get right t
     #  t2 = t
     self.creatures[t] = value
-    self.updated = True
+    if (t == Eagle) and self.updated == False:
+      self.updatedEagle = True
+    else:
+      self.updated = True
   def setCreature(self, creature):
     self[type(creature)] = creature
 
