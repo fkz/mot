@@ -3,6 +3,7 @@
 import random
 import pygame
 import sys
+import itertools
 
 from motte import Motte
 from motte import Allel
@@ -12,8 +13,6 @@ from settings import minMatingAge
 from colorutils import colorDistance
 
 backgroundColor = (255, 255, 255)
-maxAge = 100
-enemyVision = 0.25
 
 class Cell:
   def __init__(self, neighborIndices):
@@ -132,40 +131,16 @@ class Environment:
           self.computeNeighbors(tom)
         self.computeNeighbors(mot)
 
-  def mate(self, mot):
-    potentialMates = []
-    freePositions = []
+  def matesInView(self, mot):
     for (actX, actY) in self.cells[mot.x, mot.y].neighborIndices:
       if self.cells[actX, actY].mot != None:
-        if self.cells[actX, actY].mot.doYouWantToMate():
-          potentialMates.append(self.cells[actX, actY].mot)
-      else:
-        freePositions.append((actX, actY))
-    if len(potentialMates) > 0 and len(freePositions) > 0:
-      partner = potentialMates[random.randint(0, len(potentialMates) - 1)]
-      
-      
-      mating = random.randint(0,1)
-      if mating == 1:
-        if len(freePositions) > 1:
-          newPos = freePositions[random.randint(0, len(freePositions) - 1)]
-        else:
-          newPos = freePositions[0]
-        newMot = newChild(mot, partner, newPos[0], newPos[1])
-        mot.hasMated = True; partner.hasMated = True;
-       
-        #someoneDies = random.randint(0,2)
-        #if someoneDies > 0: # chance of 2/3 that someone dies during sex
-        #  #randomly kill one of the partners
-        #  poison = random.randint(0,1)
-        #  #print "A mot died during sex." + " Now we have " + str(self.numMots-1) + " mots."
-        #  if poison == 0:
-        #    self.removeMot(mot)
-        #  else:
-        #    self.removeMot(partner)
-
-        self.addMot(newMot)
-        #print "A new mot was born on field (" + str(newMot.x) + ", " + str(newMot.y) + ")." + " Now we have " + str(self.numMots) + " mots."
+        yield self.cells[actX, actY].mot
+  
+  def potentialMates(self, mot):
+    return itertools.ifilter(doYouWantToMate, self.matesInView(mot))
+  
+  def freePositionsInView(self, mot):
+    return itertools.ifilter(lambda ind: self.cells[ind].mot == None, self.cells[mot.x, mot.y].neighborIndices)
 
   def step(self):
     #print "number of active mots: " + str(len(self.activeMots))
@@ -177,25 +152,6 @@ class Environment:
       for y in range(0, self.height):
         if self.cells[x,y].mot != None:
           mot = self.cells[x,y].mot
-          mot.hasMated = False
           for action in mot.step():
-            action.executeAction(mot, self) 
-          mot.age += 1
-          if mot.age > maxAge:
-            #print "A mot died of old age." + " Now we have " + str(self.numMots-1) + " mots."
-            self.removeMot(mot)
-          else:
-            fitness = (colorDistance(self.cells[x,y].color, mot.color))
-            isDying = random.randint(0,100)
-            if isDying < int(fitness * enemyVision):
-              #print "A mot was eaten by a grue. Mjammjam." + " Now we have " + str(self.numMots-1) + " mots."
-              self.removeMot(mot)
-
-    # check for mates
-    for x in range(0, self.width):
-      for y in range(0, self.height):
-        if self.cells[x,y].mot != None:
-          mot = self.cells[x,y].mot
-          if mot.hasMated == False:
-            self.mate(mot)
-
+            action.executeAction(mot, self)
+            
