@@ -19,29 +19,37 @@ class Cell:
   def __init__(self, x, y, neighborIndices):
     self.x = x
     self.y = y
-    self.mot = None
+    self.creatures = {}
     if random.randrange(100) < probabilityEagle:
       self.eagle = Eagle(x, y)
     else:
       self.eagle = None
     self.color = backgroundColor
     self.neighborIndices = neighborIndices
-  def setMot(self, mot):
-    self.mot = mot
-  def setEagle(self, eagle):
-    self.eagle = eagle
+    
+  def existingType(self, t):
+    if t in self.creatures.keys():
+      return t
+    else:
+      for c in self.creatures.keys():
+        if isinstance(c, t):
+          return t
+    return None
+  #@property
+  #def mot(self):
+  #  return self.creatures[Motte]
   def __getitem__(self, t):
-    if t == Motte:
-      return self.mot
-    if t == Eagle:
-      return self.eagle
-    assert True, t
+    t2 = self.existingType(t)
+    if t2 == None:
+      return None
+    else:
+      return self.creatures[t2]
   def __setitem__(self, t, value):
-    if t == Motte:
-      self.mot = value
-    if t == Eagle:
-      self.eagle = value
-    assert True, t
+    t2 = self.existingType(t)
+    if t2 == None:
+      # TODO: get right t
+      t2 = t
+    self.creatures[t2] = value
   def setCreature(self, creature):
     self[type(creature)] = creature
 
@@ -69,22 +77,17 @@ class Environment:
   def computeNeighbors(self, mot):
     mot.neighbors = []
     for (x,y) in self.cells[mot.x, mot.y].neighborIndices:
-      if self.cells[x,y].mot != None:
-        mot.neighbors.append(self.cells[x,y].mot)
+      if self.cells[x,y][Motte] != None:
+        mot.neighbors.append(self.cells[x,y][Motte])
 
-  def addMot(self, mot):
-    assert(self.cells[mot.x,mot.y].mot == None)
-    self.cells[mot.x, mot.y].setMot(mot)
-    self.computeNeighbors(mot)
-    for tom in mot.neighbors:
-      self.computeNeighbors(tom)
+  def addCreature(self, creature):
+    assert(self.cells[creature.x,creature.y][type(creature)] == None)
+    self.cells[creature.x, creature.y].setCreature(creature)
     self.numMots += 1
     
   def removeMot(self, mot):
-     assert(self.cells[mot.x, mot.y].mot != None)
-     self.cells[mot.x, mot.y].mot = None
-     for tom in mot.neighbors:
-       self.computeNeighbors(tom)
+     assert(self.cells[mot.x, mot.y][Motte] != None)
+     self.cells[mot.x, mot.y][Motte] = None
      self.numMots -= 1
      assert(self.numMots >= 0)
      del(mot)
@@ -94,12 +97,12 @@ class Environment:
     for i in range(count):
       x = random.randint(0, self.width - 1)
       y = random.randint(0, self.height - 1)
-      if self.cells[x,y].mot == None:
+      if self.cells[x,y][Motte] == None:
         realcount += 1
         allel1 = Allel(randomRGB())
         allel2 = Allel(randomRGB())
         mot = Motte(allel1, allel2, x, y, 0)
-        self.addMot(mot)
+        self.addCreature(mot)
 
   def makeStripeColors(self, col1, col2):
     for x in range(0, self.width):
@@ -120,14 +123,14 @@ class Environment:
 
   def matesInView(self, mot):
     for (actX, actY) in self.cells[mot.x, mot.y].neighborIndices:
-      if self.cells[actX, actY].mot != None:
-        yield self.cells[actX, actY].mot
+      if self.cells[actX, actY][Motte] != None:
+        yield self.cells[actX, actY][Motte]
   
   def potentialMates(self, mot):
     return itertools.ifilter(doYouWantToMate, self.matesInView(mot))
   
   def freePositionsInView(self, mot):
-    return itertools.ifilter(lambda ind: self.cells[ind].mot == None, self.cells[mot.x, mot.y].neighborIndices)
+    return itertools.ifilter(lambda ind: self.cells[ind][Motte] == None, self.cells[mot.x, mot.y].neighborIndices)
 
   def step(self):
     #print "number of active mots: " + str(len(self.activeMots))
@@ -137,8 +140,8 @@ class Environment:
     # move and age the mots
     for x in range(0, self.width):
       for y in range(0, self.height):
-        if self.cells[x,y].mot != None:
-          mot = self.cells[x,y].mot
+        if self.cells[x,y][Motte] != None:
+          mot = self.cells[x,y][Motte]
           for action in mot.step():
             action.executeAction(mot, self)
         if self.cells[x,y].eagle != None:

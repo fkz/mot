@@ -33,7 +33,7 @@ class Motte(Creature):
     self.x = x
     self.y = y
     self.age = age
-    self.neighbors = []
+    self.count = 0
 
   def randomAllel(self):
     if random.randint(0, 1) == 0:
@@ -45,6 +45,10 @@ class Motte(Creature):
     return self.age >= minMatingAge
   
   def step(self):
+    self.count += 1
+    if self.count < 4:
+      return []
+    self.count = 0
     self.age += 1
     if self.age > maxAge:
       return [MotDies()]
@@ -68,7 +72,7 @@ class PairWith(Action):
       mating = random.randint(0,1)
       if mating == 1:
         newMot = newChild(mot, partner, childPosition[0], childPosition[1])
-        environment.addMot(newMot)
+        environment.addCreature(newMot)
     except IndexError:
       # there are no partners/no free positions
       pass

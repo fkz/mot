@@ -3,6 +3,8 @@
 import pygame
 
 from settings import minMatingAge
+from motte import Motte
+from eagle import Eagle
 
 class Visuals:
   def __init__(self, screen, env):
@@ -40,9 +42,9 @@ class Visuals:
         cell = self.env.cells[x,y]
 
         pygame.draw.rect(screen, cell.color, (x * length, y * length, length, length), 0)
-        if cell.mot != None:
-          color = cell.mot.color
-          ripeness = min(float(cell.mot.age) / float(minMatingAge), 1.0)
+        if cell[Motte] != None:
+          color = cell[Motte].color
+          ripeness = min(float(cell[Motte].age) / float(minMatingAge), 1.0)
           adultRadius = length/2
           myRadius = max(int(ripeness * adultRadius), 4)
           pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
@@ -50,11 +52,11 @@ class Visuals:
 
           if self.xray:
             allelRadius = max(int(myRadius / 2) - 1, 1)
-            color1 = cell.mot.allel1.rgb
-            color2 = cell.mot.allel2.rgb
+            color1 = cell[Motte].allel1.rgb
+            color2 = cell[Motte].allel2.rgb
             pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
             pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
-        if cell.eagle != None:
+        if cell[Eagle] != None:
           screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
     self.drawInfoScreen()
     pygame.display.update()
