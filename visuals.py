@@ -40,7 +40,8 @@ class Visuals:
           color2 = cell.mot.allel2.rgb
           pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
           pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
-        screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
+        if cell.eagle != None:
+          screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
     pygame.display.update()
 
   def drawGameOverScreen(self):

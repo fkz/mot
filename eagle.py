@@ -20,7 +20,6 @@ class KillEagle(Action):
     fitness = (colorDistance(environment.cells[eagle.x,eagle.y].color, mot.color))
     isDying = random.randint(0,100)
     if isDying < int(fitness * enemyVision):
-      print "kill eagle"
       environment.removeMot(mot)
 
   
