@@ -17,6 +17,7 @@ class Visuals:
     self.length = screenDim / (cellDim)
     self.adlerImage = pygame.image.load("adler.png").convert_alpha()
     self.adlerImage = pygame.transform.scale(self.adlerImage, (self.length, self.length))
+    self.xray = True
 
   def drawField(self):
     screen = self.screen
@@ -35,14 +36,18 @@ class Visuals:
           pygame.draw.circle(screen, (0,0,0), (x * length + length/2, y*length + length/2), myRadius, 0)
           pygame.draw.circle(screen, color, (x * length + length/2, y*length + length/2), myRadius -1, 0)
 
-          allelRadius = max(int(myRadius / 2) - 1, 1)
-          color1 = cell.mot.allel1.rgb
-          color2 = cell.mot.allel2.rgb
-          pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
-          pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
+          if self.xray:
+            allelRadius = max(int(myRadius / 2) - 1, 1)
+            color1 = cell.mot.allel1.rgb
+            color2 = cell.mot.allel2.rgb
+            pygame.draw.circle(screen, color1, (x * length + length/2 - allelRadius, y*length + length/2), allelRadius, 0)
+            pygame.draw.circle(screen, color2, (x * length + length/2 + allelRadius, y*length + length/2), allelRadius, 0)
         if cell.eagle != None:
           screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
     pygame.display.update()
+
+  def toggleXRay(self):
+    self.xray = not self.xray
 
   def drawGameOverScreen(self):
     screen = self.screen
