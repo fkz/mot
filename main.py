@@ -6,16 +6,17 @@ import sys
 
 from environment import Environment
 from visuals import Visuals
+from colorutils import randomRGB
 
-timePerStepInMilliseconds = 2
+timePerStepInMilliseconds = 20
 
 if __name__ == "__main__":
   pygame.init()
   infoObject = pygame.display.Info()
   screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
-  env = Environment(50,50)
-  env.generateRandom(1000)
-  env.makeStripeColors()
+  env = Environment(20,20)
+  env.generateRandom(100)
+  env.makeStripeColors(randomRGB(), randomRGB())
   visuals = Visuals(screen, env)
   visuals.drawField()
 

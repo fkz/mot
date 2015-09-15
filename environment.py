@@ -11,7 +11,7 @@ from motte import newChild
 from settings import minMatingAge, probabilityEagle
 from eagle import Eagle
 
-from colorutils import colorDistance
+from colorutils import colorDistance, randomRGB
 
 backgroundColor = (255, 255, 255)
 
@@ -44,10 +44,6 @@ class Cell:
     assert True, t
   def setCreature(self, creature):
     self[type(creature)] = creature
-  
-
-def randomRGB():
-  return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 class Environment:
   def __init__(self, height, width):
@@ -105,9 +101,7 @@ class Environment:
         mot = Motte(allel1, allel2, x, y, 0)
         self.addMot(mot)
 
-  def makeStripeColors(self):
-    col1 = (255,255,0)
-    col2 = (255,0,255)
+  def makeStripeColors(self, col1, col2):
     for x in range(0, self.width):
       for y in range(0, self.height):
         if (y >= self.height/2):

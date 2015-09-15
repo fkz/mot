@@ -1,6 +1,10 @@
 #!/usr/bin/python
 
 import math
+import random
+
+def randomRGB():
+  return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 def colorDistanceSingle(r1, g1, b1, r2, g2, b2): # returns value between 0 and 100
   (l1, a1, b1) = colorToLab(r1, g1, b1)
