@@ -7,13 +7,13 @@ import sys
 from environment import Environment
 from visuals import Visuals
 
-timePerStepInMilliseconds = 20
+timePerStepInMilliseconds = 2
 
 if __name__ == "__main__":
   pygame.init()
   screen = pygame.display.set_mode((800,800))
-  env = Environment(5,5)
-  env.generateRandom(5000)
+  env = Environment(50,50)
+  env.generateRandom(1000)
   env.makeStripeColors()
   visuals = Visuals(screen, env)
   visuals.drawField()

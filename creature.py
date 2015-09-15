@@ -1,4 +1,6 @@
 
+import random
+
 class Creature(object):  
   def __init__(self, x, y):
     self.x = x
@@ -18,10 +20,11 @@ class Creature(object):
       dy = 1
     elif direction == 2: # try left
       dx = -1
-    else: # try right
+    elif direction == 3: # try right
       dx = +1
+    else:
+      assert True, "random is wrong"
     return MoveCreature(dx, dy)
-
 
 class Action:
   """
@@ -37,5 +40,5 @@ class MoveCreature(Action):
   def __init__(self, dx, dy):
     self.dx = dx
     self.dy = dy
-  def executeAction(self, mot, environment):
-    environment.move(mot, self.dx, self.dy)
+  def executeAction(self, creature, environment):
+    environment.move(creature, self.dx, self.dy)
