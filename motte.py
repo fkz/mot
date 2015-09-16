@@ -34,6 +34,9 @@ class Motte(Creature):
     self.y = y
     self.age = age
     self.count = 0
+    
+  def colorAsHex(self):
+    return "#{0:2x}{1:2x}{3:2x}".format(self.color)
 
   def randomAllel(self):
     if random.randint(0, 1) == 0:

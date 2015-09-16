@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-import random
 import pygame
-import sys
 import argparse
 
 from environment import Environment
@@ -24,7 +22,7 @@ if __name__ == "__main__":
 
   args = parser.parse_args()
   
-  env = Environment(args.width, args.height)
+  env = Environment(args.height, args.width)
   env.generateRandom(args.motcount)
 
   statistics = []
@@ -40,6 +38,7 @@ if __name__ == "__main__":
 
   try:
     while True:
+      print "new round"
       currentTime = pygame.time.get_ticks()
       for s in statistics:
         s.step(env)

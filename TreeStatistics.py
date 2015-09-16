@@ -6,13 +6,6 @@ class TreeStatistics(Statistics):
   def __init__(self, env, filepath):
     self.filepath = filepath
     # initialize first mots
-    self.index = 0
-   
-        
-  motNames = {}
-  index = 0
-  
-  def __enter__(self):
     self.outputFile = open(self.filepath, 'w')
     self.outputFile.write("digraph HI {\n")
     for x in range(0, env.width):
@@ -21,7 +14,15 @@ class TreeStatistics(Statistics):
         if mot != None:
           self.motNames[mot] = self.index
           self.index += 1
-
+          #self.outputFile.write("c{0} [color=#{1:2x}{2:2x}{3:2x}]".format(self.motNames[mot], mot.color))
+    
+    self.index = 0
+   
+        
+  motNames = {}
+  index = 0
+  
+  def __enter__(self):
     return self
   
   def __exit__(self):

@@ -2,6 +2,7 @@
 
 import pygame
 
+import sys
 from settings import minMatingAge
 from motte import Motte
 from eagle import Eagle
@@ -111,6 +112,10 @@ class Visual(Statistics):
   def __exit__(self):
     pass
   def step(self, env):
+    if env.numMots == 0:
+      self.visuals.drawGameOverScreen()
+    else:
+      self.visuals.drawField(env)
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit(); sys.exit();
@@ -123,5 +128,4 @@ class Visual(Statistics):
           self.visuals.toggleShowEagles(env)
         if event.key == pygame.K_ESCAPE:
           pygame.quit(); sys.exit();
-    self.visuals.drawField(env)
-
+    
