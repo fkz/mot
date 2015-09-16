@@ -7,7 +7,6 @@ import argparse
 
 from environment import Environment
 from visuals import Visuals, Visual
-from colorutils import randomRGB
 from TreeStatistics import TreeStatistics
 
 timePerStepInMilliseconds = 20

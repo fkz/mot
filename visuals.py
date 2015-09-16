@@ -6,6 +6,7 @@ from settings import minMatingAge
 from motte import Motte
 from eagle import Eagle
 from statistics import Statistics
+from colorutils import randomRGB
 
 class Visuals:
   def __init__(self, screen, env):
