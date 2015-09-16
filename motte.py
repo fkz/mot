@@ -87,6 +87,7 @@ class PairWith(Action):
   def executeAction(self, mot, environment):
     newMot = newChild(mot, self.partner, self.childPosition[0], self.childPosition[1])
     environment.addCreature(newMot)
+    self.child = newMot
     
 class AddAge(Action):
   def executeAction(self, mot, environment):

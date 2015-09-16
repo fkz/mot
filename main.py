@@ -3,42 +3,51 @@
 import random
 import pygame
 import sys
+import argparse
 
 from environment import Environment
-from visuals import Visuals
+from visuals import Visuals, Visual
 from colorutils import randomRGB
+from TreeStatistics import TreeStatistics
 
 timePerStepInMilliseconds = 20
 
 if __name__ == "__main__":
-  pygame.init()
-  infoObject = pygame.display.Info()
-  screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
-  env = Environment(20,20)
-  env.generateRandom(55)
-  env.makeStripeColors(randomRGB(), randomRGB())
-  visuals = Visuals(screen, env)
-  visuals.drawField()
+  parser = argparse.ArgumentParser(description='Simulate mots')
+  parser.add_argument('--height', type=int, default=20,
+                   help='the height of the grid')
+  parser.add_argument('--width', type=int, default=20,
+                   help='the width of the grid')
+  parser.add_argument('--motcount', type=int, default=100, help="The number of mots which are spawned at begin")
+  parser.add_argument('--speed', type=int, default=100, help="Number of milliseconds between two steps")
+  parser.add_argument('--draw', action='store_true', help='make a graphical simulation')
+  parser.add_argument('--tree', help='make a dot graph at the position')
 
-  gameOver = False
-  while True:
-    currentTime = pygame.time.get_ticks()
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        pygame.quit(); sys.exit();
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_SPACE:
-          visuals.toggleXRay()
-        if event.key == pygame.K_RETURN:
-          env.makeStripeColors(randomRGB(), randomRGB())
-        if event.key == pygame.K_LSHIFT:
-          visuals.toggleShowEagles()
-        if event.key == pygame.K_ESCAPE:
-          pygame.quit(); sys.exit();
-    if not gameOver:
-      env.step()
-      visuals.drawField()
-    if env.numMots == 0:
-      gameOver = True
-      visuals.drawGameOverScreen()
-    pygame.time.wait (timePerStepInMilliseconds - (pygame.time.get_ticks() - currentTime))
+  args = parser.parse_args()
+  
+  env = Environment(args.width, args.height)
+  env.generateRandom(args.motcount)
+
+  statistics = []
+  
+  if args.draw:
+    statistics.append(Visual(env))
+  
+  if args.tree:
+    statistics.append(TreeStatistics(env, args.tree))
+  
+  for s in statistics:
+    s.__enter__()
+
+  try:
+    while True:
+      currentTime = pygame.time.get_ticks()
+      for s in statistics:
+        s.step(env)
+      for creature, action in env.stepWithAge():
+        for s in statistics:
+          s.mergeAction(env, creature, action)
+      pygame.time.wait (args.speed - (pygame.time.get_ticks() - currentTime))
+  finally:
+    for s in statistics:
+      s.__exit__()

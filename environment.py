@@ -132,8 +132,8 @@ class Environment:
       for y in range(0, self.height):
         for creature in self.cells[x,y].allCreatures():
           for action in creature.step(self):
-            yield creature, action
             action.executeAction(creature, self)
+            yield creature, action
 
   def step(self):
     list(self.stepWithAge())

@@ -5,11 +5,11 @@ import pygame
 from settings import minMatingAge
 from motte import Motte
 from eagle import Eagle
+from statistics import Statistics
 
 class Visuals:
   def __init__(self, screen, env):
     self.screen = screen
-    self.env = env
     screenWidth = screen.get_width()
     screenHeight = screen.get_height()
     envWidth = env.width
@@ -22,26 +22,26 @@ class Visuals:
     self.xray = True
     self.showEagles = True
 
-  def drawInfoScreen(self):
+  def drawInfoScreen(self, env):
     fontSize = 25
     fontSpacing = 2 * fontSize
     myfont = pygame.font.SysFont("monospace", fontSize)
     label = myfont.render("Toggle X-ray vision: SPACE", 1, (255,255,0))
-    self.screen.blit(label, (self.env.width * self.length + 20, 10))
+    self.screen.blit(label, (env.width * self.length + 20, 10))
     label = myfont.render("Random Stripes: RETURN", 1, (255,255,0))
-    self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing))
+    self.screen.blit(label, (env.width * self.length + 20, 10 + fontSpacing))
     label = myfont.render("Toggle stealth Eagles: LSHIFT", 1, (255,255,0))
-    self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing * 2))
+    self.screen.blit(label, (env.width * self.length + 20, 10 + fontSpacing * 2))
     label = myfont.render("Quit program: ESCAPE", 1, (255,255,0))
-    self.screen.blit(label, (self.env.width * self.length + 20, 10 + fontSpacing * 3))
+    self.screen.blit(label, (env.width * self.length + 20, 10 + fontSpacing * 3))
     pygame.display.update()
 
-  def drawField(self):
+  def drawField(self, env):
     screen = self.screen
     length = self.length
-    for x in range(0, self.env.width):
-      for y in range(0, self.env.height):
-        cell = self.env.cells[x,y]
+    for x in range(0, env.width):
+      for y in range(0, env.height):
+        cell = env.cells[x,y]
         updated = cell.updated
         if self.xray:
           updated = updated or cell.updatedEagle
@@ -65,20 +65,20 @@ class Visuals:
           if self.showEagles and cell[Eagle] != None:
             screen.blit(self.adlerImage, pygame.rect.Rect(x * length, y * length, length, length))
           cell.updated = False
-    self.drawInfoScreen()
+    self.drawInfoScreen(env)
     pygame.display.update()
 
-  def toggleXRay(self):
+  def toggleXRay(self, env):
     self.xray = not self.xray
-    for x in range(0, self.env.width):
-      for y in range(0, self.env.height):
-        self.env.cells[x,y].updated = True
+    for x in range(0, env.width):
+      for y in range(0, env.height):
+        env.cells[x,y].updated = True
 
-  def toggleShowEagles(self):
+  def toggleShowEagles(self, env):
     self.showEagles = not self.showEagles
-    for x in range(0, self.env.width):
-      for y in range(0, self.env.height):
-        self.env.cells[x,y].updated = True
+    for x in range(0, env.width):
+      for y in range(0, env.height):
+        env.cells[x,y].updated = True
 
   def drawGameOverScreen(self):
     screen = self.screen
@@ -96,3 +96,31 @@ class Visuals:
     label = myfont.render("All mots are dead!", 1, (255,255,0))
     screen.blit(label, (100, 100))
     pygame.display.update()
+
+
+class Visual(Statistics):
+  def __init__(self, env):
+    pygame.init()
+    infoObject = pygame.display.Info()
+    self.screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
+    self.visuals = Visuals(self.screen, env)
+    self.visuals.drawField(env)
+  def __enter__(self):
+    return self
+  def __exit__(self):
+    pass
+  def step(self, env):
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit(); sys.exit();
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_SPACE:
+          self.visuals.toggleXRay(env)
+        if event.key == pygame.K_RETURN:
+          env.makeStripeColors(randomRGB(), randomRGB())
+        if event.key == pygame.K_LSHIFT:
+          self.visuals.toggleShowEagles(env)
+        if event.key == pygame.K_ESCAPE:
+          pygame.quit(); sys.exit();
+    self.visuals.drawField(env)
+
