@@ -38,7 +38,6 @@ if __name__ == "__main__":
 
   try:
     while True:
-      print "new round"
       currentTime = pygame.time.get_ticks()
       for s in statistics:
         s.step(env)
