@@ -129,15 +129,22 @@ class Visual(Statistics):
     else:
       self.visuals.drawField(env)
       self.visuals.drawInfos(infos, env)
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        pygame.quit(); sys.exit();
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_SPACE:
-          self.visuals.toggleXRay(env)
-        if event.key == pygame.K_RETURN:
-          env.makeStripeColors(randomRGB(), randomRGB())
-        if event.key == pygame.K_LSHIFT:
-          self.visuals.toggleShowEagles(env)
-        if event.key == pygame.K_ESCAPE:
+    first = True
+    pause = False
+    while first or pause:
+      first = False
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
           pygame.quit(); sys.exit();
+        if event.type == pygame.KEYDOWN:
+          if event.key == pygame.K_SPACE:
+            self.visuals.toggleXRay(env)
+          if event.key == pygame.K_RETURN:
+            env.makeStripeColors(randomRGB(), randomRGB())
+          if event.key == pygame.K_LSHIFT:
+            self.visuals.toggleShowEagles(env)
+          if event.key == pygame.K_ESCAPE:
+            pygame.quit(); sys.exit();
+          if event.key == pygame.K_l:
+            pause = not pause
+            pygame.time.wait(1000)
