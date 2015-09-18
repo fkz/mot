@@ -43,7 +43,7 @@ class Motte(Creature):
       return Allel(self.allel1.rgb)
     else:
       return Allel(self.allel2.rgb)
-    
+
   def doYouWantToMate(self):
     return self.age >= minMatingAge
   
@@ -62,7 +62,6 @@ class Motte(Creature):
       # there are no partners/no free positions
       return None
 
-  
   def step(self, env):
     self.count += 1
     if self.count >= 4:
@@ -79,7 +78,9 @@ class Motte(Creature):
 class MotDies(Action):
   def executeAction(self, mot, environment):
     environment.removeMot(mot)
-  
+  def __str__(self):
+    return "dies because to old"
+
 class PairWith(Action):
   def __init__(self, partner, childPosition):
     self.partner = partner
@@ -91,12 +92,16 @@ class PairWith(Action):
     newMot = newChild(mot, self.partner, self.childPosition[0], self.childPosition[1])
     environment.addCreature(newMot)
     self.child = newMot
-    
+  def __str__(self):
+    return "pair with {0}, create child at {1}".format(self.partner, self.childPosition)
+
 class AddAge(Action):
   def executeAction(self, mot, environment):
     mot.age += 1
     if mot.age <= minMatingAge:
       environment.cells[mot.x,mot.y].updated = True
+  def __str__(self):
+    return "increase age by 1"
 
 def newChild(motte1, motte2, x, y):
   return Motte(motte1.randomAllel().mutate(), motte2.randomAllel().mutate(), x, y, 0)

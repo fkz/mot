@@ -127,13 +127,17 @@ class Environment:
   def freePositionsInView(self, mot):
     return itertools.ifilter(lambda ind: self.cells[ind][Motte] == None, self.cells[mot.x, mot.y].neighborIndices)
 
-  def stepWithAge(self):
+  def allCellPositions(self):
     for x in range(0, self.width):
       for y in range(0, self.height):
-        for creature in self.cells[x,y].allCreatures():
-          for action in creature.step(self):
-            action.executeAction(creature, self)
-            yield creature, action
+        yield x, y
+
+  def stepWithAge(self):
+    for pos in self.allCellPositions():
+      for creature in self.cells[pos].allCreatures():
+        for action in creature.step(self):
+          action.executeAction(creature, self)
+          yield creature, action
 
   def step(self):
     list(self.stepWithAge())

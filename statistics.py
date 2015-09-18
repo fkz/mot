@@ -5,3 +5,5 @@ class Statistics:
     pass
   def step(self):
     pass
+  def info(self):
+    return None

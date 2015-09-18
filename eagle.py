@@ -6,7 +6,6 @@ from colorutils import colorDistance
 from settings import enemyVision
 from motte import Motte
 
-
 class Eagle(Creature):
   def __init__(self, x, y):
     super(Eagle, self).__init__(x, y)
@@ -23,10 +22,8 @@ class Eagle(Creature):
     if self.shouldKillEagle(environment):
       yield KillEagle()
     yield self.doMove()
-    
+
 class KillEagle(Action):
   def executeAction(self, eagle, environment):
-    environment.removeMot(environment.cells[eagle.x,eagle.y][Motte])
-
-  
-  
+    self.killedMot = environment.cells[eagle.x, eagle.y][Motte]
+    environment.removeMot(self.killedMot)

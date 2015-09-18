@@ -42,3 +42,5 @@ class MoveCreature(Action):
     self.dy = dy
   def executeAction(self, creature, environment):
     environment.move(creature, self.dx, self.dy)
+  def __str__(self):
+    return "move by dx={0} dy={1}".format(self.dx, self.dy)

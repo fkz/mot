@@ -16,12 +16,9 @@ class TreeStatistics(Statistics):
           self.motsInCurrentGeneration.append("c{0}".format(self.index))
           self.index += 1
           self.addMod(mot)
-          #self.outputFile.write("c{0} [color=#{1:2x}{2:2x}{3:2x}]".format(self.motNames[mot], mot.color))
     self.outputStr += "{{rank=same {0}}}".format(" ".join(self.motsInCurrentGeneration))
     self.motsInCurrentGeneration = []
-    
-   
-        
+
   motNames = {}
   motsInCurrentGeneration = []
   outputStr = ""
@@ -29,9 +26,8 @@ class TreeStatistics(Statistics):
 
   def addMod(self, mod):
     name = "c{0}".format(self.motNames[mod])
-    self.outputFile.write("{}[fillcolor=\"#{:02X}{:02X}{:02X}\"]\n".format(name, mod.color[0], mod.color[1], mod.color[2]))
-    
-  
+    self.outputFile.write("{}[fillcolor=\"#{:02X}{:02X}{:02X}\" style=filled]\n".format(name, mod.color[0], mod.color[1], mod.color[2]))
+
   def __enter__(self):
     return self
   

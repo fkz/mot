@@ -38,6 +38,17 @@ class Visuals:
     self.screen.blit(label, (env.width * self.length + 20, 10 + fontSpacing * 3))
     pygame.display.update()
 
+  def drawInfos(self, infos, env):
+    fontSize = 25
+    fontSpacing = 2 * fontSize
+    myfont = pygame.font.SysFont("monospace", fontSize)
+    height = 4
+    for info in infos:
+      ++height
+      label = myfont.render(info, 1, (255, 255, 0))
+      self.screen.fill((0, 0, 0), pygame.Rect(env.width * self.length + 20, 10 + fontSpacing * height, 2000, fontSpacing * height))
+      self.screen.blit(label, (env.width * self.length + 20, 10 + fontSpacing * height))
+
   def drawField(self, env):
     screen = self.screen
     length = self.length
@@ -92,7 +103,7 @@ class Visuals:
     dy = screen.get_height() / 2 - imagerect.height / 2
 
     imagerect.move_ip(dx, dy)
-
+    
     screen.blit(myimage, imagerect)
     myfont = pygame.font.SysFont("monospace", 25)
     label = myfont.render("All mots are dead!", 1, (255,255,0))
@@ -111,11 +122,13 @@ class Visual(Statistics):
     return self
   def __exit__(self):
     pass
-  def step(self, env):
+  def step(self, env, infos):
     if env.numMots == 0:
+      pygame.display.update()
       self.visuals.drawGameOverScreen()
     else:
       self.visuals.drawField(env)
+      self.visuals.drawInfos(infos, env)
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit(); sys.exit();
@@ -128,4 +141,3 @@ class Visual(Statistics):
           self.visuals.toggleShowEagles(env)
         if event.key == pygame.K_ESCAPE:
           pygame.quit(); sys.exit();
-    
