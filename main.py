@@ -9,7 +9,7 @@ from environment import Environment
 from visuals import Visuals, Visual
 from TreeStatistics import TreeStatistics
 from allactions import AllActions
-from difference import Difference
+from difference import Difference, DifferenceGraph
 
 timePerStepInMilliseconds = 20
 
@@ -26,6 +26,7 @@ if __name__ == "__main__":
   parser.add_argument('--rounds', type=int, help='number of rounds', default=0)
   parser.add_argument('--printactions', action='store_true', help='Print actions')
   parser.add_argument('--difference', action='store_true', help='Show difference')
+  parser.add_argument('--differenceo', help='difference output')
 
   args = parser.parse_args()
   
@@ -47,6 +48,9 @@ if __name__ == "__main__":
   
   if args.difference:
     statistics.append(Difference(env))
+  
+  if args.differenceo:
+    statistics.append(DifferenceGraph(env, args.differenceo))
   
   for s in statistics:
     s.__enter__()

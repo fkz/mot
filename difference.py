@@ -11,13 +11,9 @@ class Difference(MotsAlive):
   count = 0
   
   def addMot(self, mot, env):
-    #print "+1"
-    #self.completeStatistics += self.difference(mot, env)
     self.count += 1
 
   def removeMot(self, mot, env):
-    #print "-1"
-    #self.completeStatistics -= self.difference(mot, env)
     self.count -= 1
   
   def step(self, env):
@@ -58,12 +54,9 @@ class Difference(MotsAlive):
 
 class DifferenceGraph(Difference):
   def __init__(self, env, filepath):
-    super.__init__(env)
+    Difference.__init__(self, env)
     self.outputfile = open(filepath, 'w')
   
   def step(self, env):
-    super.step(env)
-    self.completeStatistics = 0
-    for pos in env.allCellPositions():
-      self.completeStatistics += self.difference(env.cells[pos][Motte], env)
-    self.outputfile.write("{0}, {1}".format(self.count, self.completeStatistics))
+    Difference.step(self, env)
+    self.outputfile.write("{0}, {1}\n".format(self.count, self.completeStatistics))
