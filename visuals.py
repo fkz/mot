@@ -112,10 +112,13 @@ class Visuals:
 
 
 class Visual(Statistics):
-  def __init__(self, env):
+  def __init__(self, env, fullscreen):
     pygame.init()
     infoObject = pygame.display.Info()
-    self.screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
+    if fullscreen:
+      self.screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
+    else:
+      self.screen = pygame.display.set_mode((infoObject.current_w - 30, infoObject.current_h - 30))    
     self.visuals = Visuals(self.screen, env)
     self.visuals.drawField(env)
   def __enter__(self):

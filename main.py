@@ -14,21 +14,25 @@ from difference import Difference, DifferenceGraph
 timePerStepInMilliseconds = 20
 
 if __name__ == "__main__":
+  
   parser = argparse.ArgumentParser(description='Simulate mots')
   parser.add_argument('--height', type=int, default=20,
                    help='the height of the grid')
   parser.add_argument('--width', type=int, default=20,
                    help='the width of the grid')
-  parser.add_argument('--motcount', type=int, default=100, help="The number of mots which are spawned at begin")
+  parser.add_argument('--motcount', type=int, default=100, help="The number of mots which are spawned in the beginning")
   parser.add_argument('--speed', type=int, default=0, help="Number of milliseconds between two steps")
   parser.add_argument('--draw', action='store_true', help='make a graphical simulation')
   parser.add_argument('--tree', help='make a dot graph at the position')
   parser.add_argument('--rounds', type=int, help='number of rounds', default=0)
   parser.add_argument('--printactions', action='store_true', help='Print actions')
   parser.add_argument('--difference', action='store_true', help='Show difference')
-  parser.add_argument('--differenceo', help='difference output')
+  parser.add_argument('--differenceo', help='output a list of differences to a file')
+  parser.add_argument('--no-fullscreen', action='store_true', help='don\'t switch to fullscreen')
 
   args = parser.parse_args()
+  
+  fullscreen = not args.no_fullscreen
   
   env = Environment(args.height, args.width)
   env.generateRandom(args.motcount)
@@ -36,7 +40,7 @@ if __name__ == "__main__":
   statistics = []
   
   if args.draw:
-    visual = Visual(env)
+    visual = Visual(env, fullscreen=fullscreen)
   else:
     visual = None
     
