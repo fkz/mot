@@ -1,8 +1,8 @@
 
-  """
-  do some additional work in specific actions like mating etc.
-  can be used to generate cumulative statistics or show some additional info
-  """
+"""
+do some additional work in specific actions like mating etc.
+can be used to generate cumulative statistics or show some additional info
+"""
 class Statistics:
   """
   is called every time an action has been executed
